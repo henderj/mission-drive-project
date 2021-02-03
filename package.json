@@ -1,0 +1,22 @@
+{
+  "name": "missiondriveproject",
+  "version": "1.0.0",
+  "description": "Code for the mission drive project that I'm working on for the MLM!",
+  "main": "API.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henderj/mission-drive-project.git"
+  },
+  "author": "Josh Hendershot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/henderj/mission-drive-project/issues"
+  },
+  "homepage": "https://github.com/henderj/mission-drive-project#readme",
+  "dependencies": {
+    "@types/google-apps-script": "^1.0.22"
+  }
+}
