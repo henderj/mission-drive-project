@@ -53,7 +53,7 @@ namespace FlushContent {
     Logger.log("Archiving folder %s.", folderToArchive);
     const archiveFolder = Utils.getFolder(
       areaFolder,
-      Utils.getArchiveFolderName(areaFolder),
+      Vars.getArchiveFolderName(areaFolder),
       true
     );
 

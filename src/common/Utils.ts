@@ -1,6 +1,4 @@
 namespace M_Utils {
-  const Vars = Variables;
-
   export function getFolder(parentFolder, folderName, createIfNone = false) {
     const iterator = parentFolder.getFoldersByName(folderName);
     if (iterator.hasNext()) return iterator.next();
@@ -36,16 +34,6 @@ namespace M_Utils {
     const yyyy = today.getFullYear();
 
     return mm + "/" + dd + "/" + yyyy;
-  }
-
-  export function getArchiveFolderName(areaFolder) {
-    const areaFolderName = areaFolder.getName();
-    const suffixIndex = areaFolderName
-      .toLowerCase()
-      .indexOf(Vars.getAreaFolderSuffix().toLowerCase());
-    const areaName = areaFolderName.substring(0, suffixIndex).trim();
-    Logger.log("area name: %s.", areaName);
-    return areaName + Vars.getArchiveFolderSuffix();
   }
 
   export function getSheetByID(spreadsheet, gid) {

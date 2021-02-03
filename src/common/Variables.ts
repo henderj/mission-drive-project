@@ -181,4 +181,14 @@ namespace Variables {
   export function getPermissionsRange() {
     return getPermissionsSheet().getDataRange();
   }
+
+  export function getArchiveFolderName(areaFolder) {
+    const areaFolderName = areaFolder.getName();
+    const suffixIndex = areaFolderName
+      .toLowerCase()
+      .indexOf(getAreaFolderSuffix().toLowerCase());
+    const areaName = areaFolderName.substring(0, suffixIndex).trim();
+    Logger.log("area name: %s.", areaName);
+    return areaName + getArchiveFolderSuffix();
+  }
 }
