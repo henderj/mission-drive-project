@@ -21,8 +21,8 @@ Delete super old content
 
 */
 
-// It works!! :) :)
-
-function test() {
-  createAndSendPDFsForZoneOrDistrict("Lansing", true);
+namespace mission.global.Code {
+  function test() {
+    PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
+  }
 }
