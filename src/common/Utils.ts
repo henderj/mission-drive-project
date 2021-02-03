@@ -24,7 +24,7 @@ namespace M_Utils {
 
   export function forEveryFolder(
     parentFolder: GoogleAppsScript.Drive.Folder,
-    func: Function,
+    func: (folder: GoogleAppsScript.Drive.Folder) => any,
     recursive: boolean = false
   ): void {
     const iterator = parentFolder.getFolders();
@@ -55,7 +55,7 @@ namespace M_Utils {
 
   export function forEachRangeCell(
     range: GoogleAppsScript.Spreadsheet.Range,
-    func: Function
+    func: (range: GoogleAppsScript.Spreadsheet.Range) => any,
   ): void {
     const numRows = range.getNumRows();
     const numCols = range.getNumColumns();
