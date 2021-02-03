@@ -1,5 +1,9 @@
 namespace M_Utils {
-  export function getFolder(parentFolder, folderName, createIfNone = false) {
+  export function getFolder(
+    parentFolder: GoogleAppsScript.Drive.Folder,
+    folderName: string,
+    createIfNone: boolean = false
+  ): GoogleAppsScript.Drive.Folder | null {
     const iterator = parentFolder.getFoldersByName(folderName);
     if (iterator.hasNext()) return iterator.next();
 
@@ -18,7 +22,11 @@ namespace M_Utils {
     return parentFolder.createFolder(folderName);
   }
 
-  export function forEveryFolder(parentFolder, func, recursive = false) {
+  export function forEveryFolder(
+    parentFolder: GoogleAppsScript.Drive.Folder,
+    func: Function,
+    recursive: boolean = false
+  ): void {
     const iterator = parentFolder.getFolders();
     while (iterator.hasNext()) {
       const folder = iterator.next();
@@ -27,7 +35,7 @@ namespace M_Utils {
     }
   }
 
-  export function getTodayDateFormatted() {
+  export function getTodayDateFormatted(): string {
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, "0");
     const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -36,13 +44,19 @@ namespace M_Utils {
     return mm + "/" + dd + "/" + yyyy;
   }
 
-  export function getSheetByID(spreadsheet, gid) {
+  export function getSheetByID(
+    spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet,
+    gid: string
+  ): GoogleAppsScript.Spreadsheet.Sheet {
     const sheets = spreadsheet.getSheets();
-    const sheet = sheets.find((s) => s.getSheetId() == gid);
+    const sheet = sheets.find((s) => s.getSheetId().toString() == gid);
     return sheet;
   }
 
-  export function forEachRangeCell(range, func) {
+  export function forEachRangeCell(
+    range: GoogleAppsScript.Spreadsheet.Range,
+    func: Function
+  ): void {
     const numRows = range.getNumRows();
     const numCols = range.getNumColumns();
 
@@ -55,7 +69,7 @@ namespace M_Utils {
     }
   }
 
-  export function isMissionaryEmail(email) {
+  export function isMissionaryEmail(email: string): boolean {
     const regExp = /^\w+\.?\w+@missionary\.org$/i;
     return regExp.test(email);
   }
