@@ -2,7 +2,7 @@ namespace FlushContent {
   const Vars = Variables;
   const Utils = M_Utils;
 
-  export function setUpTrigger(startingDate) {
+  export function setUpTrigger(startingDate: GoogleAppsScript.Base.Date): void {
     startingDate.setHours(2);
     ScriptApp.newTrigger("setUpRecurringTrigger")
       .timeBased()
@@ -10,7 +10,7 @@ namespace FlushContent {
       .create();
   }
 
-  function setUpRecurringTrigger() {
+  function setUpRecurringTrigger(): void {
     ScriptApp.newTrigger("archiveContentFolders")
       .timeBased()
       .everyWeeks(6)
@@ -18,7 +18,7 @@ namespace FlushContent {
       .create();
   }
 
-  export function archiveContentFolders() {
+  export function archiveContentFolders(): void {
     Logger.log("Getting Zone drives folder...");
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
     Logger.log("Found Zone drives folder!");
@@ -27,7 +27,7 @@ namespace FlushContent {
     Utils.forEveryFolder(zoneDrives, archiveContentFoldersIfAreaFolder, true);
   }
 
-  function archiveContentFoldersIfAreaFolder(folder) {
+  function archiveContentFoldersIfAreaFolder(folder: GoogleAppsScript.Drive.Folder): void {
     Logger.log("Searching through %s...", folder.getName());
     const name = folder.getName();
     if (name.toLowerCase().includes(Vars.getAreaFolderSuffix().toLowerCase())) {
@@ -49,7 +49,7 @@ namespace FlushContent {
     }
   }
 
-  function archiveFolder(folderToArchive, areaFolder) {
+  function archiveFolder(folderToArchive: GoogleAppsScript.Drive.Folder, areaFolder: GoogleAppsScript.Drive.Folder): void {
     Logger.log("Archiving folder %s.", folderToArchive);
     const archiveFolder = Utils.getFolder(
       areaFolder,
