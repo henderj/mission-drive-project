@@ -2,12 +2,14 @@ namespace DataValidation {
   const Vars = Variables;
   const Utils = M_Utils;
 
-  export function updateDataValidation(e) {
+  export function updateDataValidation(
+    e: GoogleAppsScript.Events.SheetsOnEdit
+  ): void {
     const range = e.range;
     const emailAddressColNum = Vars.getEmailAddressColNum();
     const zoneColNum = Vars.getZoneColNum();
     const districtColNum = Vars.getDistrictColNum();
-    Utils.forEachRangeCell(range, (cell) =>
+    Utils.forEachRangeCell(range, (cell: GoogleAppsScript.Spreadsheet.Range) =>
       updateDataValidationForCell(
         cell,
         emailAddressColNum,
@@ -18,11 +20,11 @@ namespace DataValidation {
   }
 
   function updateDataValidationForCell(
-    cell,
-    emailAddressColNum,
-    zoneColNum,
-    districtColNum
-  ) {
+    cell: GoogleAppsScript.Spreadsheet.Range,
+    emailAddressColNum: number,
+    zoneColNum: number,
+    districtColNum: number
+  ): void {
     const col = cell.getColumn();
 
     if (col == emailAddressColNum) {
@@ -44,7 +46,9 @@ namespace DataValidation {
     }
   }
 
-  function updateValidationFromEmail(range) {
+  function updateValidationFromEmail(
+    range: GoogleAppsScript.Spreadsheet.Range
+  ): void {
     if (removeValidationIfEmpty(range, 4)) return;
 
     const zoneRange = range.offset(0, 1);
@@ -60,7 +64,9 @@ namespace DataValidation {
     accessRange.setDataValidation(rule2);
   }
 
-  function updateValidationFromZone(range) {
+  function updateValidationFromZone(
+    range: GoogleAppsScript.Spreadsheet.Range
+  ): void {
     if (removeValidationIfEmpty(range, 2)) return;
 
     const districtRange = range.offset(0, 1);
@@ -71,7 +77,7 @@ namespace DataValidation {
     districtRange.setDataValidation(rule);
   }
 
-  function updateValidationFromDistrict(range) {
+  function updateValidationFromDistrict(range: GoogleAppsScript.Spreadsheet.Range): void {
     if (removeValidationIfEmpty(range, 1)) return;
 
     const areaRange = range.offset(0, 1);
@@ -82,7 +88,7 @@ namespace DataValidation {
     areaRange.setDataValidation(rule);
   }
 
-  function removeValidationIfEmpty(range, numCols) {
+  function removeValidationIfEmpty(range: GoogleAppsScript.Spreadsheet.Range, numCols: number): boolean {
     if (range.getValue() == "") {
       Logger.log(
         "Range %s was empty, removing data validations in %s cells...",
@@ -97,9 +103,8 @@ namespace DataValidation {
     return false;
   }
 
-  function clearCells(startingCell, numCols) {
+  function clearCells(startingCell: GoogleAppsScript.Spreadsheet.Range, numCols: number): void {
     const rangeToClear = startingCell.offset(0, 0, 1, numCols);
     rangeToClear.clear({ contentsOnly: true });
   }
-
 }
