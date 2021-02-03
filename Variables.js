@@ -1,5 +1,5 @@
 const SettingsSpreadsheetID = "1meH_THNN87D7UAr1l_ynIZmeVXxA_rguliOODXig8QA";
-const SettingsSheetName = "Settings"
+const SettingsSheetName = "Settings";
 
 function getInterfaceSpreadsheet() {
   return SpreadsheetApp.openById(SettingsSpreadsheetID);
@@ -14,34 +14,49 @@ function getInterfaceSheetByID(gid) {
 }
 
 function getValueOfSetting(settingName) {
-  return getSettingsSheet().createTextFinder(settingName).findNext().offset(0, 1).getValue().toString();
+  return getSettingsSheet()
+    .createTextFinder(settingName)
+    .findNext()
+    .offset(0, 1)
+    .getValue()
+    .toString();
 }
 
-
-function getTalentSpreadsheetID(){
+function getTalentSpreadsheetID() {
   return getValueOfSetting("MLMTalentSpreadsheetID");
 }
 
-function getTalentSpreadsheet(){
+function getTalentSpreadsheet() {
   return SpreadsheetApp.openById(getTalentSpreadsheetID());
 }
 
-function getTalentResponsesSheet(){
-  return getSheetByID(getTalentSpreadsheet(), getValueOfSetting("MLMTalentResponsesSheetID"));
+function getTalentResponsesSheet() {
+  return getSheetByID(
+    getTalentSpreadsheet(),
+    getValueOfSetting("MLMTalentResponsesSheetID")
+  );
 }
 
-function getTalentTemplateSheet(){
-  return getSheetByID(getTalentSpreadsheet(), getValueOfSetting("MLMTalentTemplateSheetID"));
+function getTalentTemplateSheet() {
+  return getSheetByID(
+    getTalentSpreadsheet(),
+    getValueOfSetting("MLMTalentTemplateSheetID")
+  );
 }
 
-function getTalentFilteredDataSheet(){
-  return getSheetByID(getTalentSpreadsheet(), getValueOfSetting("MLMTalentFilteredDataSheetID"));
+function getTalentFilteredDataSheet() {
+  return getSheetByID(
+    getTalentSpreadsheet(),
+    getValueOfSetting("MLMTalentFilteredDataSheetID")
+  );
 }
 
-function getTalentQuickInfoSheet(){
-  return getSheetByID(getTalentSpreadsheet(), getValueOfSetting("MLMTalentQuickInfoSheetID"));
+function getTalentQuickInfoSheet() {
+  return getSheetByID(
+    getTalentSpreadsheet(),
+    getValueOfSetting("MLMTalentQuickInfoSheetID")
+  );
 }
-
 
 function getZoneToDistrictMapID() {
   return getValueOfSetting("ZoneToDistrictMapID");
@@ -75,10 +90,9 @@ function getAccessLevelColNum() {
   return parseInt(getValueOfSetting("PermissionsAccessLevelCol"));
 }
 
-function getPermissionsRangeA1Notation(){
+function getPermissionsRangeA1Notation() {
   return getValueOfSetting("PermissionsRange");
 }
-
 
 function getZoneToDistrictMapSheet() {
   const id = getZoneToDistrictMapID();
@@ -90,17 +104,15 @@ function getDistrictToAreaMapSheet() {
   return getInterfaceSheetByID(id);
 }
 
-function getAccessLevelSheet(){
+function getAccessLevelSheet() {
   const id = getValueOfSetting("AccessLevelSheetID");
   return getInterfaceSheetByID(id);
 }
 
-function getPermissionsSheet(){
+function getPermissionsSheet() {
   const id = getValueOfSetting("PermissionsID");
   return getInterfaceSheetByID(id);
 }
-
-
 
 function getMissionDatabaseID() {
   return getValueOfSetting("MissionDatabaseID");
@@ -113,8 +125,6 @@ function getMissionDriveID() {
 function getZoneDrivesID() {
   return getValueOfSetting("ZoneDrivesID");
 }
-
-
 
 function getZoneFolderSuffix() {
   return " " + getValueOfSetting("ZoneFolderSuffix");
@@ -136,9 +146,6 @@ function getSMSShortcutsFolderName() {
   return getValueOfSetting("SMSShortcutsFolderName");
 }
 
-
-
-
 function getQualityFolderName() {
   return getValueOfSetting("QualityFolderName");
 }
@@ -146,5 +153,3 @@ function getQualityFolderName() {
 function getQuickFolderName() {
   return getValueOfSetting("QuickFolderName");
 }
-
-

@@ -3,10 +3,22 @@ function updateDataValidation(e) {
   const emailAddressColNum = getEmailAddressColNum();
   const zoneColNum = getZoneColNum();
   const districtColNum = getDistrictColNum();
-  forEachRangeCell(range, (cell) => updateDataValidationForCell(cell, emailAddressColNum, zoneColNum, districtColNum));
+  forEachRangeCell(range, (cell) =>
+    updateDataValidationForCell(
+      cell,
+      emailAddressColNum,
+      zoneColNum,
+      districtColNum
+    )
+  );
 }
 
-function updateDataValidationForCell(cell, emailAddressColNum, zoneColNum, districtColNum) {
+function updateDataValidationForCell(
+  cell,
+  emailAddressColNum,
+  zoneColNum,
+  districtColNum
+) {
   const col = cell.getColumn();
 
   if (col == emailAddressColNum) {
@@ -28,16 +40,19 @@ function updateDataValidationForCell(cell, emailAddressColNum, zoneColNum, distr
   }
 }
 
-
 function updateValidationFromEmail(range) {
   if (removeValidationIfEmpty(range, 4)) return;
 
   const zoneRange = range.offset(0, 1);
-  const rule = SpreadsheetApp.newDataValidation().requireValueInRange(getZoneRange()).build();
+  const rule = SpreadsheetApp.newDataValidation()
+    .requireValueInRange(getZoneRange())
+    .build();
   zoneRange.setDataValidation(rule);
 
   const accessRange = zoneRange.offset(0, 3);
-  const rule2 = SpreadsheetApp.newDataValidation().requireValueInRange(getAccessLevelRange()).build();
+  const rule2 = SpreadsheetApp.newDataValidation()
+    .requireValueInRange(getAccessLevelRange())
+    .build();
   accessRange.setDataValidation(rule2);
 }
 
@@ -46,7 +61,9 @@ function updateValidationFromZone(range) {
 
   const districtRange = range.offset(0, 1);
   // clearCells(districtRange, 2);
-  const rule = SpreadsheetApp.newDataValidation().requireValueInRange(getDistrictRange(range.getValue())).build();
+  const rule = SpreadsheetApp.newDataValidation()
+    .requireValueInRange(getDistrictRange(range.getValue()))
+    .build();
   districtRange.setDataValidation(rule);
 }
 
@@ -55,14 +72,19 @@ function updateValidationFromDistrict(range) {
 
   const areaRange = range.offset(0, 1);
   // clearCells(areaRange, 1);
-  const rule = SpreadsheetApp.newDataValidation().requireValueInRange(getAreaRange(range.getValue())).build();
+  const rule = SpreadsheetApp.newDataValidation()
+    .requireValueInRange(getAreaRange(range.getValue()))
+    .build();
   areaRange.setDataValidation(rule);
 }
 
-
 function removeValidationIfEmpty(range, numCols) {
   if (range.getValue() == "") {
-    Logger.log("Range %s was empty, removing data validations in %s cells...", range.getA1Notation(), numCols);
+    Logger.log(
+      "Range %s was empty, removing data validations in %s cells...",
+      range.getA1Notation(),
+      numCols
+    );
     const rangeToClear = range.offset(0, 1, 1, numCols);
     rangeToClear.clearDataValidations();
     rangeToClear.clear({ contentsOnly: true });
@@ -76,10 +98,6 @@ function clearCells(startingCell, numCols) {
   rangeToClear.clear({ contentsOnly: true });
 }
 
-
-
-
-
 function getZoneRange() {
   return getZoneToDistrictMapSheet().getRange("A2:A");
 }
@@ -90,11 +108,13 @@ function getDistrictRange(zone) {
 }
 
 function getAreaRange(district) {
-  const districtCell = getDistrictToAreaMapSheet().getRange("A2:A").createTextFinder(district).findNext();
+  const districtCell = getDistrictToAreaMapSheet()
+    .getRange("A2:A")
+    .createTextFinder(district)
+    .findNext();
   return districtCell.offset(0, 1).offset(0, 0, 1, 9);
 }
 
 function getAccessLevelRange() {
   return getAccessLevelSheet().getRange("A1:A");
 }
-
