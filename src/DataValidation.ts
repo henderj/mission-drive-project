@@ -1,6 +1,6 @@
-namespace mission.DataValidation {
-  const Vars = mission.global.Variables;
-  const Utils = mission.global.Utilities;
+namespace DataValidation {
+  const Vars = Variables;
+  const Utils = M_Utils;
 
   export function updateDataValidation(e) {
     const range = e.range;

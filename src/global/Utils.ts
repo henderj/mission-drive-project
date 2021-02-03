@@ -1,5 +1,5 @@
-namespace mission.global.Utilities {
-  const Vars = mission.global.Variables;
+namespace M_Utils {
+  const Vars = Variables;
 
 
   export function getFolder(parentFolder, folderName, createIfNone = false) {

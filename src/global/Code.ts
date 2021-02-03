@@ -21,7 +21,7 @@ Delete super old content
 
 */
 
-namespace mission.global.Code {
+namespace Code {
   function test() {
     PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
   }

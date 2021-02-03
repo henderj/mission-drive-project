@@ -1,6 +1,6 @@
-namespace mission.FlushContent {
-  const Vars = mission.global.Variables;
-  const Utils = mission.global.Utilities;
+namespace FlushContent {
+  const Vars = Variables;
+  const Utils = M_Utils;
 
   export function setUpTrigger(startingDate) {
     startingDate.setHours(2);

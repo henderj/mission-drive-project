@@ -1,5 +1,5 @@
-namespace mission.global.Variables {
-  const Utils = mission.global.Utilities;
+namespace Variables {
+  const Utils = M_Utils;
 
   const SettingsSpreadsheetID = "1meH_THNN87D7UAr1l_ynIZmeVXxA_rguliOODXig8QA";
   const SettingsSheetName = "Settings";

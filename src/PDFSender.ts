@@ -1,5 +1,5 @@
-namespace mission.PDFSender {
-  const Vars = mission.global.Variables;
+namespace PDFSender {
+  const Vars = Variables;
 
   export function createAndSendPDFs() {
     const zones = Vars.getZoneRange()

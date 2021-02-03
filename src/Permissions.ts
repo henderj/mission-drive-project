@@ -1,6 +1,6 @@
-namespace mission.Permissions {
-  const Vars = mission.global.Variables;
-  const Utils = mission.global.Utilities;
+namespace Permissions {
+  const Vars = Variables;
+  const Utils = M_Utils;
 
   export function updatePermissions() {
     Logger.log("Updating permissions...");

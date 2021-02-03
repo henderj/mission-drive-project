@@ -1,6 +1,7 @@
-namespace mission.global.API {
+// namespace mission.global.API {
 
-  const Vars = mission.global.Variables;
+  // const Vars = mission.global.Variables;
+  
 
   function flushContent() {
     const ui = SpreadsheetApp.getUi();
@@ -31,7 +32,7 @@ namespace mission.global.API {
   }
   // getInterfaceSpreadsheet;
   function setUpFlushContentTrigger() {
-    const date = Vars.getInterfaceSpreadsheet()
+    const date = getInterfaceSpreadsheet()
       .getSheets()[0]
       .getRange(1, 1)
       .getValue()
@@ -43,14 +44,14 @@ namespace mission.global.API {
 
   function setUpOnEditTrigger() {
     ScriptApp.newTrigger("onSpreadsheetEdit")
-      .forSpreadsheet(Vars.getInterfaceSpreadsheet())
+      .forSpreadsheet(getInterfaceSpreadsheet())
       .onEdit()
       .create();
   }
   
   function onSpreadsheetEdit(e) {
     // Logger.log("edited!")
-    if (e.range.getGridId() == Vars.getPermissionsID()) {
+    if (e.range.getGridId() == getPermissionsID()) {
       Logger.log(
         "Updating data validation for %s ...",
         e.range.getA1Notation()
@@ -62,4 +63,4 @@ namespace mission.global.API {
       );
     }
   }
-}
+// }
