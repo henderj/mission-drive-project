@@ -22,7 +22,7 @@ Delete super old content
 */
 
 namespace Code {
-  function test() {
+  function test(): void {
     PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
   }
 }
