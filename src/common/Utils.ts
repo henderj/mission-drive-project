@@ -1,7 +1,6 @@
 namespace M_Utils {
   const Vars = Variables;
 
-
   export function getFolder(parentFolder, folderName, createIfNone = false) {
     const iterator = parentFolder.getFoldersByName(folderName);
     if (iterator.hasNext()) return iterator.next();
