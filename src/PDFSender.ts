@@ -1,16 +1,16 @@
 namespace PDFSender {
   const Vars = Variables;
 
-  export function createAndSendPDFs() {
-    const zones = Vars.getZoneRange()
+  export function createAndSendPDFs(): void {
+    const zones: string[] = Vars.getZoneRange()
       .getValues()
-      .map((row) => row[0].toString())
-      .filter((zone) => zone != "");
+      .map((row: any[]) => row[0].toString())
+      .filter((zone: string) => zone != "");
     zones.forEach((zone) => {
       createAndSendPDFsForZoneOrDistrict(zone, true);
 
-      let districts = Vars.getDistrictRange(zone).getValues()[0];
-      districts = districts
+      const districts: string[] = Vars.getDistrictRange(zone)
+        .getValues()[0]
         .map((col) => col.toString())
         .filter((district) => district != "");
       districts.forEach((district) =>
@@ -19,7 +19,10 @@ namespace PDFSender {
     });
   }
 
-  export function createAndSendPDFsForZoneOrDistrict(name, isZone) {
+  export function createAndSendPDFsForZoneOrDistrict(
+    name: string,
+    isZone: boolean
+  ): void {
     const leaderEmails = getLeaderEmailsForZoneOrDistrict(name, isZone);
 
     copyFilteredDataToSheet(
@@ -50,25 +53,25 @@ namespace PDFSender {
     // /\ /\ /\ /\ /\ /\ //
 
     fullInfoSheet.showSheet();
-    const fullInfoPDF = getSpreadsheetAsPDF(
+    const fullInfoPDF: GoogleAppsScript.Base.Blob | null = getSpreadsheetAsPDF(
       Vars.getTalentSpreadsheetID(),
-      fullInfoSheetID,
+      fullInfoSheetID.toString(),
       fullInfoPDFName,
       fullInfoRange
     );
     fullInfoSheet.hideSheet();
 
     quickInfoSheet.showSheet();
-    const quickInfoPDF = getSpreadsheetAsPDF(
+    const quickInfoPDF: GoogleAppsScript.Base.Blob | null = getSpreadsheetAsPDF(
       Vars.getTalentSpreadsheetID(),
-      quickInfoSheetID,
+      quickInfoSheetID.toString(),
       quickInfoPDFName,
       null,
       "A4"
     );
     quickInfoSheet.hideSheet();
 
-    const pdfs = [];
+    const pdfs: GoogleAppsScript.Base.Blob[] = [];
 
     if (fullInfoPDF == null) {
       Logger.log("full info pdf was null, moving on to next one...");
@@ -97,12 +100,12 @@ namespace PDFSender {
     emailPDFs(pdfs, reroute, subject, body); // comment this line when you no longer want to reroute emails.
   }
 
-  function getEmailsInZoneOrDistrict(name, isZone) {
-    const dataRange = Vars.getPermissionsRange().getValues();
+  function getEmailsInZoneOrDistrict(name: string, isZone: boolean): string[] {
+    const dataRangeValues = Vars.getPermissionsRange().getValues();
     const zoneOrDistrictCol =
       (isZone ? Vars.getZoneColNum() : Vars.getDistrictColNum()) - 1;
     const emailCol = Vars.getEmailAddressColNum() - 1;
-    const filtered = dataRange
+    const filtered: string[] = dataRangeValues
       .filter(
         (row) =>
           row[zoneOrDistrictCol].toString().toLowerCase() == name.toLowerCase()
@@ -116,13 +119,16 @@ namespace PDFSender {
     return filtered;
   }
 
-  function getLeaderEmailsForZoneOrDistrict(name, isZone) {
-    const dataRange = Vars.getPermissionsRange().getValues();
+  function getLeaderEmailsForZoneOrDistrict(
+    name: string,
+    isZone: boolean
+  ): string[] {
+    const dataRangeValues = Vars.getPermissionsRange().getValues();
     const zoneOrDistrictCol =
       (isZone ? Vars.getZoneColNum() : Vars.getDistrictColNum()) - 1;
     const emailCol = Vars.getEmailAddressColNum() - 1;
     const accessLevelCol = Vars.getAccessLevelColNum() - 1;
-    const filtered = dataRange
+    const filtered: string[] = dataRangeValues
       .filter(
         (row) =>
           row[zoneOrDistrictCol].toString().toLowerCase() == name.toLowerCase()
@@ -142,7 +148,10 @@ namespace PDFSender {
     return filtered;
   }
 
-  function copyFilteredDataToSheet(emails, sheetToPasteIn) {
+  function copyFilteredDataToSheet(
+    emails: string[],
+    sheetToPasteIn: GoogleAppsScript.Spreadsheet.Sheet
+  ): GoogleAppsScript.Spreadsheet.Sheet {
     const emailCol = 4;
     const nameCol = 2;
 
@@ -162,7 +171,11 @@ namespace PDFSender {
 
     for (let i = 2; i < responsesDataRange.getNumRows(); i++) {
       const emailCell = responsesDataRange.getCell(i, emailCol);
-      const email = emailCell.getValue().toString().toLowerCase().trim();
+      const email: string = emailCell
+        .getValue()
+        .toString()
+        .toLowerCase()
+        .trim();
       if (!emails.includes(email)) {
         continue;
       }
@@ -179,13 +192,13 @@ namespace PDFSender {
   }
 
   function getSpreadsheetAsPDF(
-    spreadsheetID,
-    sheetID,
-    pdfName,
-    range = null,
-    size = "A3",
-    portrait = true
-  ) {
+    spreadsheetID: string,
+    sheetID: string,
+    pdfName: string,
+    range: GoogleAppsScript.Spreadsheet.Range = null,
+    size: string = "A3",
+    portrait: boolean = true
+  ): GoogleAppsScript.Base.Blob | null {
     const ss = SpreadsheetApp.openById(spreadsheetID);
     const url = "https://docs.google.com/spreadsheets/d/SS_ID/export?".replace(
       "SS_ID",
@@ -242,7 +255,12 @@ namespace PDFSender {
     }
   }
 
-  function emailPDFs(pdfs, email, subject, body) {
+  function emailPDFs(
+    pdfs: GoogleAppsScript.Base.Blob[],
+    email: string,
+    subject: string,
+    body: string
+  ): void {
     // If allowed to send emails, send the email with the PDF attachment
     if (MailApp.getRemainingDailyQuota() > 0)
       GmailApp.sendEmail(email, subject, body, {
