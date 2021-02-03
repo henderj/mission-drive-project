@@ -2,20 +2,20 @@ namespace Permissions {
   const Vars = Variables;
   const Utils = M_Utils;
 
-  export function updatePermissions() {
+  export function updatePermissions(): void {
     Logger.log("Updating permissions...");
-    const range = Vars.getPermissionsRange().getValues();
+    const rangeValues = Vars.getPermissionsRange().getValues();
     const emailAddressColNum = Vars.getEmailAddressColNum() - 1;
-    const emails = range
+    const emails: string[] = rangeValues
       .filter((row) => Utils.isMissionaryEmail(row[emailAddressColNum]))
       .map((row) => row[emailAddressColNum].toString().toLowerCase());
 
     updatePermissionsToMissionDatabase(emails);
-    updateAccessFromRange(range);
+    updateAccessFromRange(rangeValues);
     Logger.log("Finished updating permissions! Yay!");
   }
 
-  function updatePermissionsToMissionDatabase(emails) {
+  function updatePermissionsToMissionDatabase(emails: string[]): void {
     const effectiveUserEmail = Session.getEffectiveUser().getEmail();
 
     const missionDrive = DriveApp.getFolderById(Vars.getMissionDatabaseID());
@@ -51,7 +51,7 @@ namespace Permissions {
 
     // Logger.log("Filtering emails to only give access to emails who have NONE access...");
     emails = emails.filter(
-      (e) => missionDrive.getAccess(e) == DriveApp.Permission.NONE
+      (e: string) => missionDrive.getAccess(e) == DriveApp.Permission.NONE
     );
 
     if (emails.length <= 0) {
@@ -69,18 +69,21 @@ namespace Permissions {
     missionDrive.addViewers(emails);
   }
 
-  function updateAccessFromRange(range) {
-    const map = getAccessMap(range);
+  function updateAccessFromRange(rangeValues: any[][]): void {
+    const map = getAccessMap(rangeValues);
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
 
     Utils.forEveryFolder(
       zoneDrives,
-      (folder) => setAccessToFolder(folder, map),
+      (folder: GoogleAppsScript.Drive.Folder) => setAccessToFolder(folder, map),
       true
     );
   }
 
-  function setAccessToFolder(folder, map) {
+  function setAccessToFolder(
+    folder: GoogleAppsScript.Drive.Folder,
+    map: Map<string, string[]>
+  ) {
     const effectiveUserEmail = Session.getEffectiveUser().getEmail();
 
     const folderName = folder.getName();
@@ -93,11 +96,11 @@ namespace Permissions {
     }
 
     const editorAccess = map.get(folderName);
-    let emails = editorAccess.map((email) => email.toLowerCase());
+    let emails = editorAccess.map((email: string) => email.toLowerCase());
 
     const currentEmails = folder
       .getEditors()
-      .map((user) => user.getEmail().toLowerCase());
+      .map((user: { getEmail: () => string }) => user.getEmail().toLowerCase());
 
     for (let i = 0; i < currentEmails.length; i++) {
       if (emails.includes(currentEmails[i])) {
@@ -126,7 +129,7 @@ namespace Permissions {
     }
 
     emails = emails.filter(
-      (e) =>
+      (e: string) =>
         folder.getAccess(e) == DriveApp.Permission.NONE ||
         folder.getAccess(e) == DriveApp.Permission.VIEW
     );
@@ -146,15 +149,22 @@ namespace Permissions {
     folder.addEditors(emails);
   }
 
-  function getAccessMap(range) {
-    const map = new Map();
-    for (let i = 0; i < range.length; i++) {
-      const email = range[i][Vars.getEmailAddressColNum() - 1];
-      const zone = range[i][Vars.getZoneColNum() - 1] + Vars.getZoneFolderSuffix();
+  function getAccessMap(rangeValues: any[][]) {
+    const map: Map<string, string[]> = new Map();
+    for (let i = 0; i < rangeValues.length; i++) {
+      const email: string = rangeValues[i][
+        Vars.getEmailAddressColNum() - 1
+      ].toString();
+      const zone =
+        rangeValues[i][Vars.getZoneColNum() - 1] + Vars.getZoneFolderSuffix();
       const district =
-        range[i][Vars.getDistrictColNum() - 1] + Vars.getDistrictFolderSuffix();
-      const area = range[i][Vars.getAreaColNum() - 1] + Vars.getAreaFolderSuffix();
-      const accessLevel = range[i][Vars.getAccessLevelColNum() - 1];
+        rangeValues[i][Vars.getDistrictColNum() - 1] +
+        Vars.getDistrictFolderSuffix();
+      const area =
+        rangeValues[i][Vars.getAreaColNum() - 1] + Vars.getAreaFolderSuffix();
+      const accessLevel: string = rangeValues[i][
+        Vars.getAccessLevelColNum() - 1
+      ].toString();
 
       if (email == "") {
         Logger.log(
@@ -187,7 +197,10 @@ namespace Permissions {
     return map;
   }
 
-  function getOrCreateFolderKey(map, folderName) {
+  function getOrCreateFolderKey(
+    map: Map<string, string[]>,
+    folderName: string
+  ): string[] {
     if (map.has(folderName)) return map.get(folderName);
 
     Logger.log("Creating key for %s", folderName);
