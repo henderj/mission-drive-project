@@ -20,5 +20,8 @@
   "homepage": "https://github.com/henderj/mission-drive-project#readme",
   "dependencies": {
     "@types/google-apps-script": "^1.0.22"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
   }
 }
