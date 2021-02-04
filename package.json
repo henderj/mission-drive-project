@@ -4,7 +4,7 @@
   "description": "Code for the mission drive project that I'm working on for the MLM!",
   "main": "API.js",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "clasp-push": "clasp push",
     "clasp-push :: watch": "clasp push --watch"
   },
