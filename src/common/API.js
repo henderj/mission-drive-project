@@ -1,5 +1,5 @@
-function GET_NEXT_FLUSH_DATE() {
-  const nextDate = FlushContent.getNextFlushDate(new Date());
+function GET_NEXT_TRANSFER_DATE() {
+  const nextDate = Triggers.getNextTransferDate(new Date());
   return nextDate;
 }
 

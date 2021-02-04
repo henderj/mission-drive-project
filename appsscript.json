@@ -6,8 +6,8 @@
   "runtimeVersion": "V8",
   "sheets": {
     "macros": [{
-      "menuName": "GET_NEXT_FLUSH_DATE",
-      "functionName": "GET_NEXT_FLUSH_DATE"
+      "menuName": "GET_NEXT_TRANSFER_DATE",
+      "functionName": "GET_NEXT_TRANSFER_DATE"
     }]
   }
 }

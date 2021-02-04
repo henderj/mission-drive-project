@@ -1,17 +1,17 @@
-import { FlushContent } from "../src/FlushContent";
+import { Triggers } from "../src/Triggers";
 
-describe("test getNextFlushDate() with starting date of 2/23/2021", () => {
+describe("test getNextTransferDate() with starting date of 2/23/2021", () => {
   let startingDate: Date;
 
   beforeAll(() => {
-    startingDate = FlushContent.getStartingDate();
+    startingDate = Triggers.getStartingDate();
   });
 
   it("given 2/4/2021 returns 2/23/2021", () => {
     const now = new Date(2021, 1, 4);
 
     const expected = new Date(2021, 1, 23).toDateString();
-    const actual = FlushContent.getNextFlushDate(
+    const actual = Triggers.getNextTransferDate(
       now,
       startingDate
     ).toDateString();
@@ -23,7 +23,7 @@ describe("test getNextFlushDate() with starting date of 2/23/2021", () => {
     const now = new Date(2021, 1, 24);
 
     const expected = new Date(2021, 3, 6).toDateString();
-    const actual = FlushContent.getNextFlushDate(
+    const actual = Triggers.getNextTransferDate(
       now,
       startingDate
     ).toDateString();
@@ -35,7 +35,7 @@ describe("test getNextFlushDate() with starting date of 2/23/2021", () => {
     const now = new Date(2021, 1, 23);
 
     const expected = new Date(2021, 3, 6).toDateString();
-    const actual = FlushContent.getNextFlushDate(
+    const actual = Triggers.getNextTransferDate(
       now,
       startingDate
     ).toDateString();
@@ -47,7 +47,7 @@ describe("test getNextFlushDate() with starting date of 2/23/2021", () => {
     const now = new Date(2021, 4, 13);
 
     const expected = new Date(2021, 4, 18).toDateString();
-    const actual = FlushContent.getNextFlushDate(
+    const actual = Triggers.getNextTransferDate(
       now,
       startingDate
     ).toDateString();
