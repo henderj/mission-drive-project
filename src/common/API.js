@@ -27,7 +27,7 @@ function updateFolderPermissions() {
 }
 
 function setUpFlushContentTrigger() {
-  const date = getInterfaceSpreadsheet()
+  const date = Variables.getInterfaceSpreadsheet()
     .getSheets()[0]
     .getRange(1, 1)
     .getValue()
@@ -39,14 +39,14 @@ function setUpFlushContentTrigger() {
 
 function setUpOnEditTrigger() {
   ScriptApp.newTrigger("onSpreadsheetEdit")
-    .forSpreadsheet(getInterfaceSpreadsheet())
+    .forSpreadsheet(Variables.getInterfaceSpreadsheet())
     .onEdit()
     .create();
 }
 
 function onSpreadsheetEdit(e) {
   // Logger.log("edited!")
-  if (e.range.getGridId() == getPermissionsID()) {
+  if (e.range.getGridId() == Variables.getPermissionsID()) {
     Logger.log("Updating data validation for %s ...", e.range.getA1Notation());
     DataValidation.updateDataValidation(e);
     Logger.log(
