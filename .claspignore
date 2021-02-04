@@ -12,6 +12,7 @@
 .git/**
 node_modules/**
 **/tests/**
+**/coverage/**
 
 # ignore these files...
 .gitignore
