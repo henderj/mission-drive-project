@@ -1,3 +1,8 @@
+import { M_Utils } from "./common/Utils";
+import { Variables } from "./common/Variables";
+
+export { DataValidation };
+
 namespace DataValidation {
   const Vars = Variables;
   const Utils = M_Utils;
@@ -77,7 +82,9 @@ namespace DataValidation {
     districtRange.setDataValidation(rule);
   }
 
-  function updateValidationFromDistrict(range: GoogleAppsScript.Spreadsheet.Range): void {
+  function updateValidationFromDistrict(
+    range: GoogleAppsScript.Spreadsheet.Range
+  ): void {
     if (removeValidationIfEmpty(range, 1)) return;
 
     const areaRange = range.offset(0, 1);
@@ -88,7 +95,10 @@ namespace DataValidation {
     areaRange.setDataValidation(rule);
   }
 
-  function removeValidationIfEmpty(range: GoogleAppsScript.Spreadsheet.Range, numCols: number): boolean {
+  function removeValidationIfEmpty(
+    range: GoogleAppsScript.Spreadsheet.Range,
+    numCols: number
+  ): boolean {
     if (range.getValue() == "") {
       Logger.log(
         "Range %s was empty, removing data validations in %s cells...",
@@ -103,7 +113,10 @@ namespace DataValidation {
     return false;
   }
 
-  function clearCells(startingCell: GoogleAppsScript.Spreadsheet.Range, numCols: number): void {
+  function clearCells(
+    startingCell: GoogleAppsScript.Spreadsheet.Range,
+    numCols: number
+  ): void {
     const rangeToClear = startingCell.offset(0, 0, 1, numCols);
     rangeToClear.clear({ contentsOnly: true });
   }

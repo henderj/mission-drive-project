@@ -1,4 +1,7 @@
 import { M_Utils } from "./common/Utils";
+import { Variables } from "./common/Variables";
+
+export { Permissions };
 
 namespace Permissions {
   const Vars = Variables;

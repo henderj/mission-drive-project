@@ -1,3 +1,5 @@
+export { M_Utils };
+
 namespace M_Utils {
   export function getFolder(
     parentFolder: GoogleAppsScript.Drive.Folder,
@@ -74,5 +76,3 @@ namespace M_Utils {
     return regExp.test(email);
   }
 }
-
-export { M_Utils };

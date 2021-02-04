@@ -1,3 +1,8 @@
+import { M_Utils } from "./common/Utils";
+import { Variables } from "./common/Variables";
+
+export { FlushContent };
+
 namespace FlushContent {
   const Vars = Variables;
   const Utils = M_Utils;
@@ -27,7 +32,9 @@ namespace FlushContent {
     Utils.forEveryFolder(zoneDrives, archiveContentFoldersIfAreaFolder, true);
   }
 
-  function archiveContentFoldersIfAreaFolder(folder: GoogleAppsScript.Drive.Folder): void {
+  function archiveContentFoldersIfAreaFolder(
+    folder: GoogleAppsScript.Drive.Folder
+  ): void {
     Logger.log("Searching through %s...", folder.getName());
     const name = folder.getName();
     if (name.toLowerCase().includes(Vars.getAreaFolderSuffix().toLowerCase())) {
@@ -35,7 +42,10 @@ namespace FlushContent {
         "Found Area Folder! (%s) Archiving and/or creating content folders...",
         name
       );
-      const qualityFolder = Utils.getFolder(folder, Vars.getQualityFolderName());
+      const qualityFolder = Utils.getFolder(
+        folder,
+        Vars.getQualityFolderName()
+      );
       const quickFolder = Utils.getFolder(folder, Vars.getQuickFolderName());
       if (qualityFolder != null) archiveFolder(qualityFolder, folder);
       if (quickFolder != null) archiveFolder(quickFolder, folder);
@@ -49,7 +59,10 @@ namespace FlushContent {
     }
   }
 
-  function archiveFolder(folderToArchive: GoogleAppsScript.Drive.Folder, areaFolder: GoogleAppsScript.Drive.Folder): void {
+  function archiveFolder(
+    folderToArchive: GoogleAppsScript.Drive.Folder,
+    areaFolder: GoogleAppsScript.Drive.Folder
+  ): void {
     Logger.log("Archiving folder %s.", folderToArchive);
     const archiveFolder = Utils.getFolder(
       areaFolder,

@@ -1,3 +1,7 @@
+import { M_Utils } from "./Utils";
+
+export { Variables };
+
 namespace Variables {
   const Utils = M_Utils;
 

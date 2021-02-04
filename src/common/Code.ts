@@ -25,6 +25,8 @@ Delete super old content
 
 */
 
+import { PDFSender } from "../PDFSender";
+
 function testCode(): void {
   PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
 }

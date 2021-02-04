@@ -1,3 +1,7 @@
+import { Variables } from "./common/Variables";
+
+export { PDFSender };
+
 namespace PDFSender {
   const Vars = Variables;
 
