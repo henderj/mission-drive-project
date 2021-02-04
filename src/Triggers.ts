@@ -1,11 +1,11 @@
-import { FlushContent as _FlushContent } from "./FlushContent";
+import { FlushContent as FlushContent } from "./FlushContent";
 import { Permissions } from "./Permissions";
 import { PDFSender } from "./PDFSender";
 
 export { Triggers };
 
 namespace Triggers {
-  const FlushContent = _FlushContent;
+  const flushContent = FlushContent;
   const Perms = Permissions;
   const pdfSender = PDFSender;
 
@@ -38,7 +38,7 @@ namespace Triggers {
 
   function runTransferFunctions(): void {
     Logger.log("running archiveContentFolders in FlushContent");
-    FlushContent.archiveContentFolders();
+    flushContent.archiveContentFolders();
     Logger.log("done");
 
     Logger.log("running updatePermissions in Permissions");
