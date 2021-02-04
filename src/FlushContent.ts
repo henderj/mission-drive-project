@@ -7,6 +7,21 @@ namespace FlushContent {
   const Vars = Variables;
   const Utils = M_Utils;
 
+  export function getStartingDate() {
+    return new Date(2021, 1, 23);
+  }
+
+  export function getNextFlushDate(
+    now: Date,
+    startingDate: Date = getStartingDate()
+  ): Date {
+    let nextDate = startingDate;
+    while (nextDate.getTime() < now.getTime()) {
+      nextDate.setDate(nextDate.getDate() + 7 * 6); // 7 days in a week, 6 weeks in a transfer. gets the date of the next transfer.
+    }
+    return nextDate;
+  }
+
   export function setUpTrigger(startingDate: GoogleAppsScript.Base.Date): void {
     startingDate.setHours(2);
     ScriptApp.newTrigger("setUpRecurringTrigger")
@@ -84,6 +99,7 @@ namespace FlushContent {
       Utils.getTodayDateFormatted(),
       true
     );
-    folderToArchive.moveTo(currentDateFolder);
+    // folderToArchive.moveTo(currentDateFolder);
+    (folderToArchive as any).moveTo(currentDateFolder);
   }
 }

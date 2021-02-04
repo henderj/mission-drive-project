@@ -1,3 +1,8 @@
+function GET_NEXT_FLUSH_DATE() {
+  const nextDate = FlushContent.getNextFlushDate(new Date());
+  return nextDate;
+}
+
 function flushContent() {
   const ui = SpreadsheetApp.getUi();
   const result = ui.alert(

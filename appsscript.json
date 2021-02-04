@@ -1,6 +1,13 @@
 {
   "timeZone": "America/New_York",
+  "dependencies": {
+  },
   "exceptionLogging": "STACKDRIVER",
   "runtimeVersion": "V8",
-  "dependencies": {}
+  "sheets": {
+    "macros": [{
+      "menuName": "GET_NEXT_FLUSH_DATE",
+      "functionName": "GET_NEXT_FLUSH_DATE"
+    }]
+  }
 }
