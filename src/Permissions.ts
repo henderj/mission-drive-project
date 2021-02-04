@@ -1,3 +1,5 @@
+import { M_Utils } from "./common/Utils";
+
 namespace Permissions {
   const Vars = Variables;
   const Utils = M_Utils;
