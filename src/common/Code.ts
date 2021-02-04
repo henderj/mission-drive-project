@@ -21,8 +21,6 @@ Delete super old content
 
 */
 
-namespace Code {
-  function test(): void {
-    PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
-  }
+function testCode(): void {
+  PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
 }
