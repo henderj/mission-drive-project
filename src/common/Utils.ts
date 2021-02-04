@@ -55,7 +55,7 @@ namespace M_Utils {
 
   export function forEachRangeCell(
     range: GoogleAppsScript.Spreadsheet.Range,
-    func: (range: GoogleAppsScript.Spreadsheet.Range) => any,
+    func: (range: GoogleAppsScript.Spreadsheet.Range) => any
   ): void {
     const numRows = range.getNumRows();
     const numCols = range.getNumColumns();
@@ -74,3 +74,5 @@ namespace M_Utils {
     return regExp.test(email);
   }
 }
+
+export { M_Utils };
