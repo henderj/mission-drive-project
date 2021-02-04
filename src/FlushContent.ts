@@ -13,6 +13,10 @@ namespace FlushContent {
       .timeBased()
       .at(startingDate)
       .create();
+    Logger.log(
+      "set up trigger to set up recurring trigger on %s",
+      startingDate.toDateString()
+    );
   }
 
   function setUpRecurringTrigger(): void {
@@ -21,6 +25,11 @@ namespace FlushContent {
       .everyWeeks(6)
       // .everyDays(3) <- for testing recurring trigger
       .create();
+    Logger.log(
+      "set up trigger to run archiveContentFolders every 6 weeks, starting today, at this time"
+    );
+    Logger.log("running initial 'archiveContentFolders'");
+    archiveContentFolders();
   }
 
   export function archiveContentFolders(): void {
