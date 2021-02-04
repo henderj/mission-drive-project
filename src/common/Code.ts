@@ -8,6 +8,10 @@ hendershotjoshr@gmail.com
 Feel free to contact me with any questions! :)
 
 
+This code is uploaded to Google Apps Script using "clasp".
+I am developing this code locally in Typescript using VSCode.
+This code is available on a github repository: https://github.com/henderj/mission-drive-project.git
+
 
 ********************
 ///////TODO/////////
