@@ -1,6 +1,7 @@
 import { Variables } from "./common/Variables";
 import { M_Utils } from "./common/Utils";
 import { Rainbow } from "./common/Rainbow";
+import { DataValidation } from "./DataValidation";
 
 namespace ColorCoding {
   const Vars = Variables;
@@ -65,16 +66,26 @@ namespace ColorCoding {
         const matchLevel = mappedValues[index].matchLevel;
         const cell = range.getCell(i + 1, j + 1);
 
+        Logger.log("setting color for cell at %s", cell.getA1Notation());
+
         if (matchLevel < 1) {
-          cell.setBackground(gradient.colorAt(matchLevel));
+          const color = gradient.colorAt(matchLevel);
+          Logger.log(
+            "no or close match (%s). setting color to %s...",
+            matchLevel,
+            color
+          );
+          cell.setBackground(color);
           continue;
         }
 
         if (matchLevel > 1) {
+          Logger.log("more than one match. setting color to pink");
           cell.setBackground(pink);
           return;
         }
 
+        Logger.log("perfect match. setting color to green.");
         cell.setBackground(green);
       }
     }
@@ -84,17 +95,29 @@ namespace ColorCoding {
     folder: GoogleAppsScript.Drive.Folder,
     values: NameMatchLevel[]
   ): NameMatchLevel[] {
+    Logger.log("testing folder %s", folder.getName());
+    const folderName = folder.getName();
+    const prefix = Utils.getFolderPrefix(folderName);
+    
     values.forEach((value) => {
-      const folderName = folder.getName();
-      const prefix = Utils.getFolderPrefix(folderName);
+      if (value.name == "") return;
 
       if (prefix == value.name) {
+        Logger.log("perfect match! %s => %s", prefix, value.name);
         value.matchLevel = value.matchLevel < 1 ? 1 : 2;
         return;
       }
 
       const newMatchLevel = Utils.stringSimilarity(prefix, value.name);
-      if (newMatchLevel > value.matchLevel) value.matchLevel = newMatchLevel;
+      if (newMatchLevel > value.matchLevel) {
+        Logger.log(
+          "better match: %s => %s, level: %s",
+          prefix,
+          value.name,
+          newMatchLevel
+        );
+        value.matchLevel = newMatchLevel;
+      }
     });
 
     return values;
