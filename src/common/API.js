@@ -3,6 +3,18 @@ function GET_NEXT_TRANSFER_DATE() {
   return nextDate;
 }
 
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("Mission Drive Bot")
+    .addItem("Run Test", "test")
+    .addToUi();
+}
+
+function test() {
+  const range = SpreadsheetApp.getSelection().getActiveRange();
+  ColorCoding.updateColorCodingForRange(range);
+}
+
 function flushContent() {
   const ui = SpreadsheetApp.getUi();
   const result = ui.alert(
