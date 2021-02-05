@@ -10,17 +10,17 @@ Translated into TS
 export { Rainbow };
 
 namespace Rainbow {
-  class Rainbow {
-    gradients: ColourGradient[] = null;
-    minNum = 0;
-    maxNum = 100;
-    colours = ["ff0000", "ffff00", "00ff00", "0000ff"];
+  export class Rainbow {
+    private gradients: ColourGradient[] = null;
+    private minNum = 0;
+    private maxNum = 100;
+    private colours = ["ff0000", "ffff00", "00ff00", "0000ff"];
 
     constructor() {
       this.setColours(this.colours);
     }
 
-    setColours(spectrum: string[]) {
+    private setColours(spectrum: string[]) {
       if (spectrum.length < 2) {
         throw new Error("Rainbow must have two or more colours.");
       } else {
