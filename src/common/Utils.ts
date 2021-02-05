@@ -115,4 +115,12 @@ namespace M_Utils {
     }
     return costs[s2.length];
   }
+
+  export function getFolderPrefix(folderName: string): string {
+    const split = folderName.split(" ");
+    if(split[split.length - 1].toLowerCase() != "folder") return "";
+    const suffix = split[split.length - 2] + " " + split[split.length - 1];
+    const prefix = folderName.substring(0, folderName.indexOf(suffix)).trim();
+    return prefix;
+  }
 }

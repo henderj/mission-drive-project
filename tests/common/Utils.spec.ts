@@ -23,6 +23,23 @@ describe("test stringSimilarity()", () => {
     expect(M_Utils.stringSimilarity("test", "tset")).toBe(0.5);
   });
   it("given 'traverse city' and 'travesrs city' should return close to 0.8461538461538461", () => {
-    expect(M_Utils.stringSimilarity("traverse city", "travesrs city")).toBeCloseTo(0.8461538461538461);
+    expect(
+      M_Utils.stringSimilarity("traverse city", "travesrs city")
+    ).toBeCloseTo(0.8461538461538461);
+  });
+});
+
+describe("test getFolderPrefix()", () => {
+  it("given 'test Zone Folder' should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test Zone Folder")).toBe("test");
+  });
+  it("given 'test District Folder' should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test District Folder")).toBe("test");
+  });
+  it("given 'test Area Folder' should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test Area Folder")).toBe("test");
+  });
+  it("given 'test test Area Folder' should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test test Area Folder")).toBe("test test");
   });
 });
