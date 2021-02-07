@@ -1,3 +1,5 @@
+import { Variables } from "./Variables";
+
 export { M_Utils };
 
 namespace M_Utils {
@@ -118,9 +120,16 @@ namespace M_Utils {
 
   export function getFolderPrefix(folderName: string): string {
     const split = folderName.split(" ");
-    if(split[split.length - 1].toLowerCase() != "folder") return "";
+    if (split[split.length - 1].toLowerCase() != "folder") return "";
     const suffix = split[split.length - 2] + " " + split[split.length - 1];
     const prefix = folderName.substring(0, folderName.indexOf(suffix)).trim();
     return prefix;
+  }
+
+  export function getFolderSuffix(folderName: string, possibleSuffixes: string[]): string {
+    possibleSuffixes.forEach(suffix => {
+      if(folderName.toLowerCase().indexOf(suffix.toLowerCase()) >= 0) return suffix;
+    });
+    return "";
   }
 }

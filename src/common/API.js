@@ -4,15 +4,48 @@ function GET_NEXT_TRANSFER_DATE() {
 }
 
 function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu("Mission Drive Bot")
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu("Mission Drive Bot")
+    .addSubMenu(
+      ui
+        .createMenu("Scan Folders")
+        .addItem("Scan All Folders", "scanAllFolders")
+        .addSeparator()
+        .addItem("Scan Area Folders", "scanAreaFolders")
+        .addItem("Scan District Folders", "scanDistrictFolders")
+        .addItem("Scan Zone Folders", "scanZoneFolders")
+    )
+    // .addItem("Scan")
+    .addSeparator()
     .addItem("Run Test", "test")
     .addToUi();
 }
 
+function scanAllFolders(){
+  scanAreaFolders();
+  scanDistrictFolders();
+  scanZoneFolders();
+}
+
+function scanAreaFolders(){
+  const range = Variables.getCompleteAreaRange();
+  ColorCoding.updateColorCodingForRange(range, Variables.getAreaFolderSuffix());
+}
+
+function scanDistrictFolders(){
+  const range = Variables.getCompleteDistrictRange();
+  ColorCoding.updateColorCodingForRange(range, Variables.getDistrictFolderSuffix());
+}
+
+function scanZoneFolders(){
+  const range = Variables.getZoneRange();
+  ColorCoding.updateColorCodingForRange(range, Variables.getZoneFolderSuffix());
+}
+
+
 function test() {
   const range = SpreadsheetApp.getSelection().getActiveRange();
-  ColorCoding.updateColorCodingForRange(range);
+  ColorCoding.updateColorCodingForRange(range, Variables.getAreaFolderSuffix());
 }
 
 function flushContent() {

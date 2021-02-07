@@ -164,7 +164,11 @@ namespace Variables {
   }
 
   export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getZoneToDistrictMapSheet().getRange("A2:A");
+    return getZoneToDistrictMapSheet().getRange(getValueOfSetting("CompleteZoneRange"));
+  }
+
+  export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
+    return getZoneToDistrictMapSheet().getRange(getValueOfSetting("CompleteDistrictRange"));
   }
 
   export function getDistrictRange(
@@ -184,6 +188,10 @@ namespace Variables {
       .createTextFinder(district)
       .findNext();
     return districtCell.offset(0, 1).offset(0, 0, 1, 9);
+  }
+
+  export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
+    return getZoneToDistrictMapSheet().getRange(getValueOfSetting("CompleteAreaRange"));
   }
 
   export function getAccessLevelRange(): GoogleAppsScript.Spreadsheet.Range {
