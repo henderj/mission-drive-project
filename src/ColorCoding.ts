@@ -10,6 +10,8 @@ namespace ColorCoding {
 
   interface NameMatchLevel {
     name: string;
+    suffix: string;
+    cell: GoogleAppsScript.Spreadsheet.Range;
     matchLevel: number;
   }
 
@@ -30,7 +32,8 @@ namespace ColorCoding {
     */
 
   export function updateColorCodingForRange(
-    range: GoogleAppsScript.Spreadsheet.Range
+    range: GoogleAppsScript.Spreadsheet.Range,
+    suffix: string
   ): void {
     const sheetID = range.getSheet().getSheetId().toString();
     if (
@@ -41,17 +44,27 @@ namespace ColorCoding {
       return;
     }
 
-    const rangeValues = range.getValues();
-    let mappedValues = rangeValues.flat().map((value) => {
-      return { name: value.toString(), matchLevel: 0 } as NameMatchLevel;
+    let cellsData: NameMatchLevel[] = [];
+    Utils.forEachRangeCell(range, (data) => {
+      cellsData.push({
+        cell: data,
+        name: data.getValue().toString(),
+        suffix: suffix,
+        matchLevel: 0,
+      });
     });
+
+    // const rangeValues = range.getValues();
+    // let mappedValues = rangeValues.flat().map((value) => {
+    //   return { name: value.toString(), matchLevel: 0 } as NameMatchLevel;
+    // });
 
     const zoneDrivesFolder = DriveApp.getFolderById(Vars.getZoneDrivesID());
 
     Utils.forEveryFolder(
       zoneDrivesFolder,
       (folder) => {
-        mappedValues = updateMatchLevelsForFolder(folder, mappedValues);
+        cellsData = updateMatchLevelsForFolder(folder, cellsData);
       },
       true
     );
@@ -59,67 +72,97 @@ namespace ColorCoding {
     const gradient = new Rbow.Rainbow();
     gradient.setSpectrum(red, yellow, green).setNumberRange(0, 1);
 
-    const rows = range.getNumRows();
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < range.getNumColumns(); j++) {
-        const index = i * rows + j;
-        const matchLevel = mappedValues[index].matchLevel;
-        const cell = range.getCell(i + 1, j + 1);
+    cellsData.forEach((data) => {
+      if(data.name == "") return;
 
-        Logger.log("setting color for cell at %s", cell.getA1Notation());
+      const cell = data.cell;
+      const matchLevel = data.matchLevel;
 
-        if (matchLevel < 1) {
-          const color = gradient.colorAt(matchLevel);
-          Logger.log(
-            "no or close match (%s). setting color to %s...",
-            matchLevel,
-            color
-          );
-          cell.setBackground(color);
-          continue;
-        }
+      Logger.log("setting color for cell at %s", cell.getA1Notation());
 
-        if (matchLevel > 1) {
-          Logger.log("more than one match. setting color to pink");
-          cell.setBackground(pink);
-          return;
-        }
-
-        Logger.log("perfect match. setting color to green.");
-        cell.setBackground(green);
+      if (matchLevel < 1) {
+        const color = gradient.colorAt(matchLevel);
+        Logger.log(
+          "no or close match (%s). setting color to %s...",
+          matchLevel,
+          color
+        );
+        cell.setBackground(color);
+        return;
       }
-    }
+
+      if (matchLevel > 1) {
+        Logger.log("more than one match. setting color to pink");
+        cell.setBackground(pink);
+        return;
+      }
+
+      Logger.log("perfect match. setting color to green.");
+      cell.setBackground(green);
+    });
+
+    // const rows = range.getNumRows();
+    // for (let i = 0; i < rows; i++) {
+    //   for (let j = 0; j < range.getNumColumns(); j++) {
+    //     const index = i * rows + j;
+    //     const matchLevel = mappedValues[index].matchLevel;
+    //     const cell = range.getCell(i + 1, j + 1);
+
+    //     Logger.log("setting color for cell at %s", cell.getA1Notation());
+
+    //     if (matchLevel < 1) {
+    //       const color = gradient.colorAt(matchLevel);
+    //       Logger.log(
+    //         "no or close match (%s). setting color to %s...",
+    //         matchLevel,
+    //         color
+    //       );
+    //       cell.setBackground(color);
+    //       continue;
+    //     }
+
+    //     if (matchLevel > 1) {
+    //       Logger.log("more than one match. setting color to pink");
+    //       cell.setBackground(pink);
+    //       return;
+    //     }
+
+    //     Logger.log("perfect match. setting color to green.");
+    //     cell.setBackground(green);
+    //   }
+    // }
   }
 
   function updateMatchLevelsForFolder(
     folder: GoogleAppsScript.Drive.Folder,
-    values: NameMatchLevel[]
+    cellsData: NameMatchLevel[]
   ): NameMatchLevel[] {
     Logger.log("testing folder %s", folder.getName());
     const folderName = folder.getName();
-    const prefix = Utils.getFolderPrefix(folderName);
-    
-    values.forEach((value) => {
-      if (value.name == "") return;
 
-      if (prefix == value.name) {
-        Logger.log("perfect match! %s => %s", prefix, value.name);
-        value.matchLevel = value.matchLevel < 1 ? 1 : 2;
+    cellsData.forEach((cell) => {
+      if (cell.name == "") return;
+
+      const fullName = cell.name + cell.suffix;
+
+      if (folderName == fullName) {
+        Logger.log("perfect match! %s => %s", folderName, fullName);
+        cell.matchLevel = cell.matchLevel < 1 ? 1 : 2;
         return;
       }
 
-      const newMatchLevel = Utils.stringSimilarity(prefix, value.name);
-      if (newMatchLevel > value.matchLevel) {
+      const newMatchLevel = Utils.stringSimilarity(folderName, fullName);
+      if (newMatchLevel > cell.matchLevel) {
         Logger.log(
           "better match: %s => %s, level: %s",
-          prefix,
-          value.name,
+          folderName,
+          fullName,
           newMatchLevel
         );
-        value.matchLevel = newMatchLevel;
+        cell.matchLevel = newMatchLevel;
       }
     });
 
-    return values;
+    return cellsData;
   }
 }
