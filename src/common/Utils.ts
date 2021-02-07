@@ -127,9 +127,10 @@ namespace M_Utils {
   }
 
   export function getFolderSuffix(folderName: string, possibleSuffixes: string[]): string {
+    let returnValue = "";
     possibleSuffixes.forEach(suffix => {
-      if(folderName.toLowerCase().indexOf(suffix.toLowerCase()) >= 0) return suffix;
+      if(folderName.toLowerCase().indexOf(suffix.toLowerCase()) >= 0) returnValue = suffix;
     });
-    return "";
+    return returnValue;
   }
 }

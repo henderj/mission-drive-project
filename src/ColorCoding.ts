@@ -13,6 +13,7 @@ namespace ColorCoding {
     suffix: string;
     cell: GoogleAppsScript.Spreadsheet.Range;
     matchLevel: number;
+    closestMatch: string;
   }
 
   const red = "#ea9999";
@@ -51,6 +52,7 @@ namespace ColorCoding {
         name: data.getValue().toString(),
         suffix: suffix,
         matchLevel: 0,
+        closestMatch: "",
       });
     });
 
@@ -74,6 +76,7 @@ namespace ColorCoding {
       const matchLevel = data.matchLevel;
 
       Logger.log("setting color for cell at %s", cell.getA1Notation());
+      Logger.log("match: cell - %s; looking for - %s; closest match - %s; match level %s", cell.getA1Notation(), data.name + data.suffix, data.closestMatch, matchLevel);
 
       if (matchLevel < 1) {
         const color = "#" + gradient.colorAt(matchLevel);
@@ -101,7 +104,7 @@ namespace ColorCoding {
     folder: GoogleAppsScript.Drive.Folder,
     cellsData: NameMatchLevel[]
   ): NameMatchLevel[] {
-    Logger.log("testing folder %s", folder.getName());
+    // Logger.log("testing folder %s", folder.getName());
     const folderName = folder.getName();
     const folderSuffix = Utils.getFolderSuffix(folderName, [
       Vars.getAreaFolderSuffix(),
@@ -116,14 +119,16 @@ namespace ColorCoding {
       const fullName = cell.name + cell.suffix;
 
       if (folderName == fullName) {
-        Logger.log("perfect match! %s => %s", folderName, fullName);
+        // Logger.log("perfect match! %s => %s", folderName, fullName);
         cell.matchLevel = cell.matchLevel < 1 ? 1 : 2;
+        cell.closestMatch = folderName;
         return;
       }
 
       const newMatchLevel = Utils.stringSimilarity(folderName, fullName);
       if (newMatchLevel > cell.matchLevel) {
         cell.matchLevel = newMatchLevel;
+        cell.closestMatch = folderName;
       }
     });
 

@@ -39,7 +39,27 @@ describe("test getFolderPrefix()", () => {
   it("given 'test Area Folder' should return 'test'", () => {
     expect(M_Utils.getFolderPrefix("test Area Folder")).toBe("test");
   });
-  it("given 'test test Area Folder' should return 'test'", () => {
+  it("given 'test test Area Folder' should return 'test test'", () => {
     expect(M_Utils.getFolderPrefix("test test Area Folder")).toBe("test test");
+  });
+});
+
+describe("test getFolderSuffix()", () => {
+  let suffixes = [];
+  beforeAll(() => {
+    suffixes = [" Zone Folder", " District Folder", " Area Folder"];
+  });
+
+  it("given 'test Zone Folder' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ' Zone Folder'", () => {
+    expect(M_Utils.getFolderSuffix("test Zone Folder", suffixes)).toBe(" Zone Folder");
+  });
+  it("given 'test District Folder' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ' District Folder'", () => {
+    expect(M_Utils.getFolderSuffix("test District Folder", suffixes)).toBe(" District Folder");
+  });
+  it("given 'test Area Folder' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ' Area Folder'", () => {
+    expect(M_Utils.getFolderSuffix("test Area Folder", suffixes)).toBe(" Area Folder");
+  });
+  it("given 'test test' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ''", () => {
+    expect(M_Utils.getFolderSuffix("test test", suffixes)).toBe("");
   });
 });
