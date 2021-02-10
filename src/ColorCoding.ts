@@ -1,12 +1,13 @@
 import { Variables } from "./common/Variables";
 import { M_Utils } from "./common/Utils";
 import { Rainbow } from "./common/Rainbow";
-import { DataValidation } from "./DataValidation";
+import { SheetLogger } from "./common/SheetLogger";
 
 namespace ColorCoding {
   const Vars = Variables;
   const Utils = M_Utils;
   const Rbow = Rainbow;
+  const sheetLogger = SheetLogger.SheetLogger;
 
   interface NameMatchLevel {
     name: string;
@@ -41,7 +42,7 @@ namespace ColorCoding {
       sheetID != Vars.getZoneToDistrictMapID() &&
       sheetID != Vars.getDistrictToAreaMapID()
     ) {
-      Logger.log("range is not in one of the map sheets. exiting...");
+      sheetLogger.Log("range is not in one of the map sheets. exiting...");
       return;
     }
 
@@ -58,12 +59,12 @@ namespace ColorCoding {
 
     const zoneDrivesFolder = DriveApp.getFolderById(Vars.getZoneDrivesID());
 
-    Utils.forEveryFolder(
+    Utils.forEveryContentFolder(
       zoneDrivesFolder,
       (folder) => {
         cellsData = updateMatchLevelsForFolder(folder, cellsData);
       },
-      true
+      Vars.getContentFolderSuffixes()
     );
 
     const gradient = new Rbow.Rainbow();
@@ -75,27 +76,29 @@ namespace ColorCoding {
       const cell = data.cell;
       const matchLevel = data.matchLevel;
 
-      Logger.log("setting color for cell at %s", cell.getA1Notation());
-      Logger.log("match: cell - %s; looking for - %s; closest match - %s; match level %s", cell.getA1Notation(), data.name + data.suffix, data.closestMatch, matchLevel);
+      sheetLogger.Log(`setting color for cell at ${cell.getA1Notation()}`);
+      sheetLogger.Log(
+        `match: cell - ${cell.getA1Notation()}; looking for - ${
+          data.name + data.suffix
+        }; closest match - ${data.closestMatch}; match level ${matchLevel}`
+      );
 
       if (matchLevel < 1) {
         const color = "#" + gradient.colorAt(matchLevel);
-        Logger.log(
-          "no or close match (%s). setting color to %s...",
-          matchLevel,
-          color
+        sheetLogger.Log(
+          `no or close match (${matchLevel}). setting color to ${color}...`
         );
         cell.setBackground(color);
         return;
       }
 
       if (matchLevel > 1) {
-        Logger.log("more than one match. setting color to pink");
+        sheetLogger.Log("more than one match. setting color to pink");
         cell.setBackground(pink);
         return;
       }
 
-      Logger.log("perfect match. setting color to green.");
+      sheetLogger.Log("perfect match. setting color to green.");
       cell.setBackground(green);
     });
   }
@@ -104,9 +107,12 @@ namespace ColorCoding {
     folder: GoogleAppsScript.Drive.Folder,
     cellsData: NameMatchLevel[]
   ): NameMatchLevel[] {
-    // Logger.log("testing folder %s", folder.getName());
+    // sheetLogger.Log("testing folder ${}", folder.getName());
     const folderName = folder.getName();
-    const folderSuffix = Utils.getFolderSuffix(folderName, Vars.getContentFolderSuffixes());
+    const folderSuffix = Utils.getFolderSuffix(
+      folderName,
+      Vars.getContentFolderSuffixes()
+    );
 
     cellsData.forEach((cell) => {
       if (cell.name == "") return;
@@ -115,7 +121,7 @@ namespace ColorCoding {
       const fullName = cell.name + cell.suffix;
 
       if (folderName == fullName) {
-        // Logger.log("perfect match! %s => %s", folderName, fullName);
+        // sheetLogger.Log("perfect match! ${} => ${}", folderName, fullName);
         cell.matchLevel = cell.matchLevel < 1 ? 1 : 2;
         cell.closestMatch = folderName;
         return;
