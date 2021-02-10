@@ -32,14 +32,15 @@ namespace SheetLogger {
       Logger.log(message);
       this.currentLogs.unshift(this.getPrefix() + message);
       this.currentLogs = this.currentLogs.slice(0, this.numLogs);
+      if (this.logRange == null) return;
       for (let i = this.logRange.getNumRows(); i > 0; i--) {
         this.logRange.getCell(i, 1).setValue(this.currentLogs[i - 1]);
       }
     }
 
     private getPrefix(): string {
-        const now = new Date();
-        return "[" + now.toISOString() + "] ";
+      const now = new Date();
+      return "[" + now.toISOString() + "] ";
     }
   }
 }
