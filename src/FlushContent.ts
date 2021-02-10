@@ -1,30 +1,35 @@
 import { M_Utils } from "./common/Utils";
 import { Variables } from "./common/Variables";
+import { SheetLogger } from "./common/SheetLogger";
 
 export { FlushContent };
 
 namespace FlushContent {
   const Vars = Variables;
   const Utils = M_Utils;
+  const sheetLogger = SheetLogger.SheetLogger;
 
   export function archiveContentFolders(): void {
-    Logger.log("Getting Zone drives folder...");
+    sheetLogger.Log("Getting Zone drives folder...");
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
-    Logger.log("Found Zone drives folder!");
+    sheetLogger.Log("Found Zone drives folder!");
 
-    Logger.log("Searching through zone drives folder...");
-    Utils.forEveryContentFolder(zoneDrives, archiveContentFoldersIfAreaFolder, Vars.getContentFolderSuffixes());
+    sheetLogger.Log("Searching through zone drives folder...");
+    Utils.forEveryContentFolder(
+      zoneDrives,
+      archiveContentFoldersIfAreaFolder,
+      Vars.getContentFolderSuffixes()
+    );
   }
 
   function archiveContentFoldersIfAreaFolder(
     folder: GoogleAppsScript.Drive.Folder
   ): void {
-    Logger.log("Searching through %s...", folder.getName());
+    sheetLogger.Log(`Searching through ${folder.getName()}...`);
     const name = folder.getName();
     if (name.toLowerCase().includes(Vars.getAreaFolderSuffix().toLowerCase())) {
-      Logger.log(
-        "Found Area Folder! (%s) Archiving and/or creating content folders...",
-        name
+      sheetLogger.Log(
+        `Found Area Folder! (${name}) Archiving and/or creating content folders...`
       );
       const qualityFolder = Utils.getFolder(
         folder,
@@ -38,7 +43,7 @@ namespace FlushContent {
       );
 
       if (zoneFolder == null) {
-        Logger.log(
+        sheetLogger.Log(
           `Error! Could not find a zone folder for ${name}. Returning...`
         );
         return;
@@ -48,9 +53,8 @@ namespace FlushContent {
         archiveFolder(qualityFolder, zoneFolder, prefix);
       if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, prefix);
 
-      Logger.log(
-        "Creating new Quality and Quick content folders in %s...",
-        name
+      sheetLogger.Log(
+        `Creating new Quality and Quick content folders in ${name}...`
       );
       folder.createFolder(Vars.getQualityFolderName());
       folder.createFolder(Vars.getQuickFolderName());
@@ -62,7 +66,7 @@ namespace FlushContent {
     zoneFolder: GoogleAppsScript.Drive.Folder,
     areaName: string
   ): void {
-    Logger.log("Archiving folder %s.", folderToArchive);
+    sheetLogger.Log(`Archiving folder ${folderToArchive}.`);
     const archiveFolder = Utils.getFolder(
       zoneFolder,
       Vars.getArchiveFolderName(zoneFolder),
