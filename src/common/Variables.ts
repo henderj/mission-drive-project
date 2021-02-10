@@ -164,11 +164,15 @@ namespace Variables {
   }
 
   export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getZoneToDistrictMapSheet().getRange(getValueOfSetting("CompleteZoneRange"));
+    return getZoneToDistrictMapSheet().getRange(
+      getValueOfSetting("CompleteZoneRange")
+    );
   }
 
   export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getZoneToDistrictMapSheet().getRange(getValueOfSetting("CompleteDistrictRange"));
+    return getZoneToDistrictMapSheet().getRange(
+      getValueOfSetting("CompleteDistrictRange")
+    );
   }
 
   export function getDistrictRange(
@@ -191,7 +195,9 @@ namespace Variables {
   }
 
   export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getZoneToDistrictMapSheet().getRange(getValueOfSetting("CompleteAreaRange"));
+    return getZoneToDistrictMapSheet().getRange(
+      getValueOfSetting("CompleteAreaRange")
+    );
   }
 
   export function getAccessLevelRange(): GoogleAppsScript.Spreadsheet.Range {
@@ -203,14 +209,20 @@ namespace Variables {
   }
 
   export function getArchiveFolderName(
-    areaFolder: GoogleAppsScript.Drive.Folder
+    folder: GoogleAppsScript.Drive.Folder
   ): string {
-    const areaFolderName: string = areaFolder.getName();
-    const suffixIndex: number = areaFolderName
-      .toLowerCase()
-      .indexOf(getAreaFolderSuffix().toLowerCase());
-    const areaName: string = areaFolderName.substring(0, suffixIndex).trim();
-    Logger.log("area name: %s.", areaName);
-    return areaName + getArchiveFolderSuffix();
+    const folderName: string = folder.getName();
+    const prefix = Utils.getFolderPrefix(folderName);
+    Logger.log("folder prefix: %s.", prefix);
+
+    return prefix + getArchiveFolderSuffix();
+  }
+
+  export function getContentFolderSuffixes(): string[] {
+    return [
+      getAreaFolderSuffix(),
+      getDistrictFolderSuffix(),
+      getZoneFolderSuffix(),
+    ];
   }
 }

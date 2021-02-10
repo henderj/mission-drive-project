@@ -106,11 +106,7 @@ namespace ColorCoding {
   ): NameMatchLevel[] {
     // Logger.log("testing folder %s", folder.getName());
     const folderName = folder.getName();
-    const folderSuffix = Utils.getFolderSuffix(folderName, [
-      Vars.getAreaFolderSuffix(),
-      Vars.getDistrictFolderSuffix(),
-      Vars.getZoneFolderSuffix(),
-    ]);
+    const folderSuffix = Utils.getFolderSuffix(folderName, Vars.getContentFolderSuffixes());
 
     cellsData.forEach((cell) => {
       if (cell.name == "") return;

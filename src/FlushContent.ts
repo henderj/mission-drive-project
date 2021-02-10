@@ -13,7 +13,7 @@ namespace FlushContent {
     Logger.log("Found Zone drives folder!");
 
     Logger.log("Searching through zone drives folder...");
-    Utils.forEveryFolder(zoneDrives, archiveContentFoldersIfAreaFolder, true);
+    Utils.forEveryContentFolder(zoneDrives, archiveContentFoldersIfAreaFolder, Vars.getContentFolderSuffixes());
   }
 
   function archiveContentFoldersIfAreaFolder(
@@ -31,8 +31,22 @@ namespace FlushContent {
         Vars.getQualityFolderName()
       );
       const quickFolder = Utils.getFolder(folder, Vars.getQuickFolderName());
-      if (qualityFolder != null) archiveFolder(qualityFolder, folder);
-      if (quickFolder != null) archiveFolder(quickFolder, folder);
+      const prefix = Utils.getFolderPrefix(name);
+      const zoneFolder = Utils.findParentZoneFolder(
+        folder,
+        Vars.getZoneFolderSuffix()
+      );
+
+      if (zoneFolder == null) {
+        Logger.log(
+          `Error! Could not find a zone folder for ${name}. Returning...`
+        );
+        return;
+      }
+
+      if (qualityFolder != null)
+        archiveFolder(qualityFolder, zoneFolder, prefix);
+      if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, prefix);
 
       Logger.log(
         "Creating new Quality and Quick content folders in %s...",
@@ -45,12 +59,13 @@ namespace FlushContent {
 
   function archiveFolder(
     folderToArchive: GoogleAppsScript.Drive.Folder,
-    areaFolder: GoogleAppsScript.Drive.Folder
+    zoneFolder: GoogleAppsScript.Drive.Folder,
+    areaName: string
   ): void {
     Logger.log("Archiving folder %s.", folderToArchive);
     const archiveFolder = Utils.getFolder(
-      areaFolder,
-      Vars.getArchiveFolderName(areaFolder),
+      zoneFolder,
+      Vars.getArchiveFolderName(zoneFolder),
       true
     );
 
@@ -59,7 +74,13 @@ namespace FlushContent {
       Utils.getTodayDateFormatted(),
       true
     );
+
+    const areaArchiveFolder = Utils.getFolder(
+      currentDateFolder,
+      areaName + " Area",
+      true
+    );
     // folderToArchive.moveTo(currentDateFolder);
-    (folderToArchive as any).moveTo(currentDateFolder);
+    (folderToArchive as any).moveTo(areaArchiveFolder);
   }
 }

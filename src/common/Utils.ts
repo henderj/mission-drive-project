@@ -31,6 +31,7 @@ namespace M_Utils {
     func: (folder: GoogleAppsScript.Drive.Folder) => any,
     recursive: boolean = false
   ): void {
+    // forEveryFolderConditional(parentFolder, func, () => recursive);
     const iterator = parentFolder.getFolders();
     while (iterator.hasNext()) {
       const folder = iterator.next();
@@ -39,13 +40,41 @@ namespace M_Utils {
     }
   }
 
+  export function forEveryContentFolder(
+    startingFolder: GoogleAppsScript.Drive.Folder,
+    func: (folder: GoogleAppsScript.Drive.Folder) => any,
+    folderSuffixes: string[]
+  ): void {
+    const shouldSearch = (folder: GoogleAppsScript.Drive.Folder) => {
+      const suffix = getFolderSuffix(folder.getName(), folderSuffixes);
+      return suffix != "";
+    };
+    forEveryFolderConditional(startingFolder, func, shouldSearch);
+  }
+
+  export function forEveryFolderConditional(
+    parentFolder: GoogleAppsScript.Drive.Folder,
+    func: (folder: GoogleAppsScript.Drive.Folder) => any,
+    shouldSearch: (folder: GoogleAppsScript.Drive.Folder) => boolean
+  ): void {
+    const iterator = parentFolder.getFolders();
+    while (iterator.hasNext()) {
+      const folder = iterator.next();
+      if (shouldSearch(folder)) {
+        func(folder);
+        forEveryFolderConditional(folder, func, shouldSearch);
+      }
+    }
+  }
+
   export function getTodayDateFormatted(): string {
     const today = new Date();
-    const dd = String(today.getDate()).padStart(2, "0");
-    const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    const monthName = today.toLocaleString("default", { month: "short" });
+    // const dd = String(today.getDate()).padStart(2, "0");
+    // const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
     const yyyy = today.getFullYear();
 
-    return mm + "/" + dd + "/" + yyyy;
+    return monthName + " " + yyyy;
   }
 
   export function getSheetByID(
@@ -126,11 +155,32 @@ namespace M_Utils {
     return prefix;
   }
 
-  export function getFolderSuffix(folderName: string, possibleSuffixes: string[]): string {
+  export function getFolderSuffix(
+    folderName: string,
+    possibleSuffixes: string[]
+  ): string {
     let returnValue = "";
-    possibleSuffixes.forEach(suffix => {
-      if(folderName.toLowerCase().indexOf(suffix.toLowerCase()) >= 0) returnValue = suffix;
+    possibleSuffixes.forEach((suffix) => {
+      if (folderName.toLowerCase().indexOf(suffix.toLowerCase()) >= 0)
+        returnValue = suffix;
     });
     return returnValue;
+  }
+
+  export function findParentZoneFolder(
+    childFolder: GoogleAppsScript.Drive.Folder,
+    zoneSuffix: string
+  ): GoogleAppsScript.Drive.Folder | null {
+    const iterator = childFolder.getParents();
+    if (iterator.hasNext() == false) {
+      Logger.log(
+        `Folder ${childFolder.getName()} has no parent folder. Returning null...`
+      );
+      return null;
+    }
+    const parent = childFolder.getParents().next();
+    const name = parent.getName();
+    if (name.toLowerCase().includes(zoneSuffix.toLowerCase())) return parent;
+    return findParentZoneFolder(parent, zoneSuffix);
   }
 }
