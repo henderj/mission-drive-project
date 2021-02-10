@@ -18,7 +18,7 @@ namespace SheetLogger {
 
     readonly logRange: GoogleAppsScript.Spreadsheet.Range;
     readonly numLogs: number = 3;
-    private currentLogs: string[];
+    private currentLogs: string[] = [];
 
     constructor() {
       this.logRange = Vars.getLogRange();
@@ -30,11 +30,16 @@ namespace SheetLogger {
 
     public _log(message: string) {
       Logger.log(message);
-      this.currentLogs.unshift(message);
+      this.currentLogs.unshift(this.getPrefix() + message);
       this.currentLogs = this.currentLogs.slice(0, this.numLogs);
       for (let i = this.logRange.getNumRows(); i > 0; i--) {
         this.logRange.getCell(i, 1).setValue(this.currentLogs[i - 1]);
       }
+    }
+
+    private getPrefix(): string {
+        const now = new Date();
+        return "[" + now.toISOString() + "] ";
     }
   }
 }
