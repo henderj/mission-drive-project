@@ -1,14 +1,16 @@
 import { M_Utils } from "./common/Utils";
 import { Variables } from "./common/Variables";
+import { SheetLogger } from "./common/SheetLogger";
 
 export { Permissions };
 
 namespace Permissions {
   const Vars = Variables;
   const Utils = M_Utils;
+  const sheetLogger = SheetLogger.SheetLogger;
 
   export function updatePermissions(): void {
-    Logger.log("Updating permissions...");
+    sheetLogger.Log(`Updating permissions...`);
     const rangeValues = Vars.getPermissionsRange().getValues();
     const emailAddressColNum = Vars.getEmailAddressColNum() - 1;
     const emails: string[] = rangeValues
@@ -17,7 +19,7 @@ namespace Permissions {
 
     updatePermissionsToMissionDatabase(emails);
     updateAccessFromRange(rangeValues);
-    Logger.log("Finished updating permissions! Yay!");
+    sheetLogger.Log(`Finished updating permissions! Yay!`);
   }
 
   function updatePermissionsToMissionDatabase(emails: string[]): void {
@@ -32,44 +34,43 @@ namespace Permissions {
       if (emails.includes(currentEmails[i])) {
         const index = emails.indexOf(currentEmails[i]);
         emails.splice(index, 1);
-        Logger.log(
-          "%s is already an viewer for the %s folder. Continuing to next email...",
-          currentEmails[i],
-          missionDrive.getName()
+        sheetLogger.Log(
+          `${
+            currentEmails[i]
+          } is already an viewer for the ${missionDrive.getName()} folder. Continuing to next email...`
         );
         continue;
       }
-      Logger.log(
-        "%s is no longer supposed to be an viewer for the %s folder. Revoking access...",
-        currentEmails[i],
-        missionDrive.getName()
+      sheetLogger.Log(
+        `${
+          currentEmails[i]
+        } is no longer supposed to be an viewer for the ${missionDrive.getName()} folder. Revoking access...`
       );
       if (currentEmails[i] == effectiveUserEmail) {
-        Logger.log(
-          "PSYCH!! %s is the email running this script. It would be very bad if I removed access from myself... Continuing to next email :)",
-          currentEmails[i]
+        sheetLogger.Log(
+          `PSYCH!! ${currentEmails[i]} is the email running this script. It would be very bad if I removed access from myself... Continuing to next email :)`
         );
         continue;
       }
       missionDrive.removeViewer(currentEmails[i]);
     }
 
-    // Logger.log("Filtering emails to only give access to emails who have NONE access...");
+    // sheetLogger.Log(`Filtering emails to only give access to emails who have NONE access...`);
     emails = emails.filter(
       (e: string) => missionDrive.getAccess(e) == DriveApp.Permission.NONE
     );
 
     if (emails.length <= 0) {
-      Logger.log(
-        "No emails to give viewer access to. Continuing to next folder."
+      sheetLogger.Log(
+        `No emails to give viewer access to. Continuing to next folder.`
       );
       return;
     }
 
-    Logger.log(
-      "Giving the following emails access to the %s folder:\n%s",
-      missionDrive.getName(),
-      emails.join("\n")
+    sheetLogger.Log(
+      `Giving the following emails access to the ${missionDrive.getName()} folder:\n${emails.join(
+        `\n`
+      )}`
     );
     missionDrive.addViewers(emails);
   }
@@ -93,9 +94,8 @@ namespace Permissions {
 
     const folderName = folder.getName();
     if (!map.has(folderName)) {
-      Logger.log(
-        "Access map does not have a value for folder named %s. Continuing...",
-        folderName
+      sheetLogger.Log(
+        `Access map does not have a value for folder named ${folderName}. Continuing...`
       );
       return;
     }
@@ -111,22 +111,21 @@ namespace Permissions {
       if (emails.includes(currentEmails[i])) {
         const index = emails.indexOf(currentEmails[i]);
         emails.splice(index, 1);
-        Logger.log(
-          "%s is already an editor for the %s folder. Continuing to next email...",
-          currentEmails[i],
-          folder.getName()
+        sheetLogger.Log(
+          `${
+            currentEmails[i]
+          } is already an editor for the ${folder.getName()} folder. Continuing to next email...`
         );
         continue;
       }
-      Logger.log(
-        "%s is no longer supposed to be an editor for the %s folder. Revoking access...",
-        currentEmails[i],
-        folder.getName()
+      sheetLogger.Log(
+        `${
+          currentEmails[i]
+        } is no longer supposed to be an editor for the ${folder.getName()} folder. Revoking access...`
       );
       if (currentEmails[i] == effectiveUserEmail) {
-        Logger.log(
-          "PSYCH!! %s is the email running this script. It would be very bad if I removed access from myself... Continuing to next email :)",
-          currentEmails[i]
+        sheetLogger.Log(
+          `PSYCH!! ${currentEmails[i]} is the email running this script. It would be very bad if I removed access from myself... Continuing to next email :)`
         );
         continue;
       }
@@ -140,16 +139,16 @@ namespace Permissions {
     );
 
     if (emails.length <= 0) {
-      Logger.log(
-        "No emails to give editor access to. Continuing to next folder."
+      sheetLogger.Log(
+        `No emails to give editor access to. Continuing to next folder.`
       );
       return;
     }
 
-    Logger.log(
-      "Giving the following emails access to the %s folder:\n%s",
-      folder.getName(),
-      emails.join("\n")
+    sheetLogger.Log(
+      `Giving the following emails access to the ${folder.getName()} folder:\n${emails.join(
+        `\n`
+      )}`
     );
     folder.addEditors(emails);
   }
@@ -171,32 +170,30 @@ namespace Permissions {
         Vars.getAccessLevelColNum() - 1
       ].toString();
 
-      if (email == "") {
-        Logger.log(
-          "No email in row %s. Continuing to next row...",
-          i.toFixed(0)
+      if (email == ``) {
+        sheetLogger.Log(
+          `No email in row ${i.toFixed(0)}. Continuing to next row...`
         );
         continue;
       }
       if (!Utils.isMissionaryEmail(email)) {
-        Logger.log(
-          "%s is not a missionary email. Continuing to next row...",
-          email
+        sheetLogger.Log(
+          `${email} is not a missionary email. Continuing to next row...`
         );
         continue;
       }
 
-      if (accessLevel == "ZL" || accessLevel == "STL" || accessLevel == "SMS") {
-        Logger.log("Adding %s to %s access queue", email, zone);
+      if (accessLevel == `ZL` || accessLevel == `STL` || accessLevel == `SMS`) {
+        sheetLogger.Log(`Adding ${email} to ${zone} access queue`);
         getOrCreateFolderKey(map, zone).push(email);
       }
 
-      if (accessLevel == "DL") {
-        Logger.log("Adding %s to %s access queue", email, district);
+      if (accessLevel == `DL`) {
+        sheetLogger.Log(`Adding ${email} to ${district} access queue`);
         getOrCreateFolderKey(map, district).push(email);
       }
 
-      Logger.log("Adding %s to %s access queue", email, area);
+      sheetLogger.Log(`Adding ${email} to ${area} access queue`);
       getOrCreateFolderKey(map, area).push(email);
     }
     return map;
@@ -208,7 +205,7 @@ namespace Permissions {
   ): string[] {
     if (map.has(folderName)) return map.get(folderName);
 
-    Logger.log("Creating key for %s", folderName);
+    sheetLogger.Log(`Creating key for ${folderName}`);
     return map.set(folderName, []).get(folderName);
   }
 }
