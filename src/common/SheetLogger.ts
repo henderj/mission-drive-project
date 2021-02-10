@@ -1,11 +1,9 @@
 import { Variables } from "./Variables";
-import { M_Utils } from "./Utils";
 
 export { SheetLogger };
 
 namespace SheetLogger {
   const Vars = Variables;
-  const Utils = M_Utils;
   export class SheetLogger {
     public static _instance: SheetLogger | null = null;
 

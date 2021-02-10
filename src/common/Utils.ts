@@ -1,5 +1,3 @@
-import { Variables } from "./Variables";
-
 export { M_Utils };
 
 namespace M_Utils {
