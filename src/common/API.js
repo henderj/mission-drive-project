@@ -22,24 +22,32 @@ function onOpen() {
 }
 
 function scanAllFolders(){
+  SheetLogger.SheetLogger.Log("Scanning All Folders...");
   scanAreaFolders();
   scanDistrictFolders();
   scanZoneFolders();
+  SheetLogger.SheetLogger.Log("Done Scanning All Folders!");
 }
 
 function scanAreaFolders(){
+  SheetLogger.SheetLogger.Log("Scanning Area Folders...");
   const range = Variables.getCompleteAreaRange();
   ColorCoding.updateColorCodingForRange(range, Variables.getAreaFolderSuffix());
+  SheetLogger.SheetLogger.Log("Done Scanning Area Folders!");
 }
 
 function scanDistrictFolders(){
+  SheetLogger.SheetLogger.Log("Scanning District Folders...");
   const range = Variables.getCompleteDistrictRange();
   ColorCoding.updateColorCodingForRange(range, Variables.getDistrictFolderSuffix());
+  SheetLogger.SheetLogger.Log("Done Scanning District Folders!");
 }
 
 function scanZoneFolders(){
+  SheetLogger.SheetLogger.Log("Scanning Zone Folders...");
   const range = Variables.getZoneRange();
   ColorCoding.updateColorCodingForRange(range, Variables.getZoneFolderSuffix());
+  SheetLogger.SheetLogger.Log("Done Scanning Zone Folders!");
 }
 
 
@@ -60,7 +68,9 @@ function flushContent() {
 
   if (result != ui.Button.YES) return;
 
+  SheetLogger.SheetLogger.Log("Flushing Content...");
   FlushContent.archiveContentFolders();
+  SheetLogger.SheetLogger.Log("Done Flushing Content!");
 }
 
 function updateFolderPermissions() {
@@ -73,7 +83,9 @@ function updateFolderPermissions() {
 
   if (result != ui.Button.YES) return;
 
+  SheetLogger.SheetLogger.Log("Updating Access...");
   Permissions.updatePermissions();
+  SheetLogger.SheetLogger.Log("Done Updating Access!");
 }
 
 function setUpFlushContentTrigger() {
