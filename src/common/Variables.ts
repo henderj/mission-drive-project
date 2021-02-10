@@ -225,4 +225,15 @@ namespace Variables {
       getZoneFolderSuffix(),
     ];
   }
+
+  export function getLogRange(): GoogleAppsScript.Spreadsheet.Range {
+    const name = getValueOfSetting("LogRangeName");
+    const ranges = getSettingsSheet().getNamedRanges();
+    const filtered = ranges.filter(r => r.getName() == name);
+    if(filtered.length <= 0){
+      Logger.log("Could not find log range.");
+      return null;
+    }
+    return filtered[0].getRange();
+  }
 }
