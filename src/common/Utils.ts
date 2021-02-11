@@ -188,4 +188,12 @@ namespace M_Utils {
     if (name.toLowerCase().includes(zoneSuffix.toLowerCase())) return parent;
     return findParentZoneFolder(parent, zoneSuffix);
   }
+
+  export function hasNumber(str: string): boolean {
+    return /\d/.test(str);
+  }
+
+  export function removeNumbers(str: string): string {
+    return str.replace(/[0-9]/g, "");
+  }
 }

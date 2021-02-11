@@ -67,3 +67,33 @@ describe("test getFolderSuffix()", () => {
     expect(M_Utils.getFolderSuffix("test test", suffixes)).toBe("");
   });
 });
+
+describe("test hasNumber()", () => {
+  it("given 'test' should return false", () => {
+    expect(M_Utils.hasNumber('test')).toBe(false);
+  })
+  it("given '123' should return true", () => {
+    expect(M_Utils.hasNumber('123')).toBe(true);
+  })
+  it("given 'test123' should return true", () => {
+    expect(M_Utils.hasNumber('test123')).toBe(true);
+  })
+})
+
+describe("test removeNumbers()", () => {
+  it("given 'test' should return 'test'", () => {
+    expect(M_Utils.removeNumbers('test')).toBe('test');
+  })
+  it("given '123' should return ''", () => {
+    expect(M_Utils.removeNumbers('123')).toBe('');
+  })
+  it("given 'test123' should return 'test'", () => {
+    expect(M_Utils.removeNumbers('test123')).toBe('test');
+  })
+  it("given 'test 123' should return 'test '", () => {
+    expect(M_Utils.removeNumbers('test 123')).toBe('test ');
+  })
+  it("given 't1e2s3t' should return 'test'", () => {
+    expect(M_Utils.removeNumbers('t1e2s3t')).toBe('test');
+  })
+})
