@@ -212,7 +212,10 @@ namespace Variables {
     folder: GoogleAppsScript.Drive.Folder
   ): string {
     const folderName: string = folder.getName();
-    const prefix = Utils.getFolderPrefix(folderName, getContentFolderSuffixes());
+    const prefix = Utils.getFolderPrefix(
+      folderName,
+      getContentFolderSuffixes()
+    );
     Logger.log("folder prefix: %s.", prefix);
 
     return prefix + getArchiveFolderSuffix();
@@ -229,11 +232,15 @@ namespace Variables {
   export function getLogRange(): GoogleAppsScript.Spreadsheet.Range {
     const name = getValueOfSetting("LogRangeName");
     const ranges = getInterfaceSpreadsheet().getNamedRanges();
-    const filtered = ranges.filter(r => r.getName() == name);
-    if(filtered.length <= 0){
+    const filtered = ranges.filter((r) => r.getName() == name);
+    if (filtered.length <= 0) {
       Logger.log("Could not find log range.");
       return null;
     }
     return filtered[0].getRange();
+  }
+
+  export function getAreaWithoutNumCol(): number {
+    return parseInt(getValueOfSetting("PermissionsAreaWithoutNumCol"));
   }
 }
