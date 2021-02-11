@@ -3,6 +3,10 @@ function GET_NEXT_TRANSFER_DATE() {
   return nextDate;
 }
 
+function GET_DISTRICT(area) {
+  DataCompletion.getDistrict(area.toString());
+}
+
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu("Mission Drive Bot")
