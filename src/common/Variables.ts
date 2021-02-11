@@ -195,7 +195,7 @@ namespace Variables {
   }
 
   export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getZoneToDistrictMapSheet().getRange(
+    return getDistrictToAreaMapSheet().getRange(
       getValueOfSetting("CompleteAreaRange")
     );
   }
