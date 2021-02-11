@@ -118,14 +118,24 @@ namespace FlushContent {
   ): void {
     sheetLogger.Log(`Archiving folder ${folderToArchive}.`);
 
-    const areaArchiveFolder = getOrCreateArchiveFolder(zoneFolder, areaName);
+    const archiveFolder = getOrCreateArchiveFolder(zoneFolder, areaName);
+
+    const fileIterator = folderToArchive.getFiles();
+    while(fileIterator.hasNext()){
+      const file = fileIterator.next();
+      // file.moveTo(archiveFolder);
+      (file as any).moveTo(archiveFolder);
+    }
+
+    folderToArchive.setTrashed(true);
+
     // folderToArchive.moveTo(currentDateFolder);
-    (folderToArchive as any).moveTo(areaArchiveFolder);
+    // (folderToArchive as any).moveTo(archiveFolder);
   }
 
   function getOrCreateArchiveFolder(
     zoneFolder: GoogleAppsScript.Drive.Folder,
-    areaName: string
+    contentTypeName: string
   ): GoogleAppsScript.Drive.Folder {
     const archiveFolder = Utils.getFolder(
       zoneFolder,
@@ -139,12 +149,12 @@ namespace FlushContent {
       true
     );
 
-    const areaArchiveFolder = Utils.getFolder(
+    const contentTypeFolder = Utils.getFolder(
       currentDateFolder,
-      areaName,
+      contentTypeName,
       true
     );
 
-    return areaArchiveFolder;
+    return contentTypeFolder;
   }
 }
