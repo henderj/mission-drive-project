@@ -3,9 +3,18 @@ function GET_NEXT_TRANSFER_DATE() {
   return nextDate;
 }
 
-function GET_DISTRICT(area) {
-  DataCompletion.getDistrict(area.toString());
-}
+// function GET_DISTRICT(area) {
+//   return DataCompletion.getDistrict(area.toString());
+// }
+
+
+// function GET_ZONE(district) {
+//   return DataCompletion.getZone(district.toString());
+// }
+
+// function WITHOUT_NUMBERS(str){
+//   return DataCompletion.getWithoutNumbers(str);
+// }
 
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
@@ -114,10 +123,10 @@ function setUpOnEditTrigger() {
 function onSpreadsheetEdit(e) {
   // Logger.log("edited!")
   if (e.range.getGridId() == Variables.getPermissionsID()) {
-    Logger.log("Updating data validation for %s ...", e.range.getA1Notation());
+    Logger.log("Updating data completion for %s ...", e.range.getA1Notation());
     DataCompletion.updateDataCompletion(e);
     Logger.log(
-      "Finished upated data validation for %s.",
+      "Finished upated data completion for %s.",
       e.range.getA1Notation()
     );
   }

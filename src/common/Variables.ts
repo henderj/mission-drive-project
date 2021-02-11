@@ -164,12 +164,14 @@ namespace Variables {
   }
 
   export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
+    return getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("CompleteZoneRange"));
     return getZoneToDistrictMapSheet().getRange(
       getValueOfSetting("CompleteZoneRange")
     );
   }
 
   export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
+    return getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("CompleteDistrictRange"));
     return getZoneToDistrictMapSheet().getRange(
       getValueOfSetting("CompleteDistrictRange")
     );
@@ -195,6 +197,7 @@ namespace Variables {
   }
 
   export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
+    return getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("CompleteAreaRange"));
     return getDistrictToAreaMapSheet().getRange(
       getValueOfSetting("CompleteAreaRange")
     );
