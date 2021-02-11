@@ -11,44 +11,28 @@ namespace DataCompletion {
     e: GoogleAppsScript.Events.SheetsOnEdit
   ): void {
     const range = e.range;
-    const emailAddressColNum = Vars.getEmailAddressColNum();
-    const zoneColNum = Vars.getZoneColNum();
-    const districtColNum = Vars.getDistrictColNum();
-    Utils.forEachRangeCell(range, (cell: GoogleAppsScript.Spreadsheet.Range) =>
-      updateDataValidationForCell(
-        cell,
-        emailAddressColNum,
-        zoneColNum,
-        districtColNum
-      )
-    );
+    Utils.forEachRangeCell(range, updateDataValidationForCell);
   }
 
   function updateDataValidationForCell(
-    cell: GoogleAppsScript.Spreadsheet.Range,
-    emailAddressColNum: number,
-    zoneColNum: number,
-    districtColNum: number
+    cell: GoogleAppsScript.Spreadsheet.Range
   ): void {
     const col = cell.getColumn();
-
-    if (col == emailAddressColNum) {
-      Logger.log("Email Address was changed! Updated data validation");
-      updateValidationFromEmail(cell);
-      return;
+    const areaCol = Vars.getAreaColNum();
+    if(col == areaCol){
+      updateAreaWithoutNumCell(cell);
     }
+  }
 
-    if (col == zoneColNum) {
-      Logger.log("Zone was changed! Updated data validation");
-      updateValidationFromZone(cell);
-      return;
-    }
-
-    if (col == districtColNum) {
-      Logger.log("District was changed! Updated data validation");
-      updateValidationFromDistrict(cell);
-      return;
-    }
+  function updateAreaWithoutNumCell(cell: GoogleAppsScript.Spreadsheet.Range) {
+    const sheet = cell.getSheet();
+    const value: string = cell.getValue().toString();
+    let areaName = value;
+    if (Utils.hasNumber(value))
+      areaName = Utils.removeNumbers(value);
+    const areaWithoutNumCol = Vars.getAreaWithoutNumCol();
+    const areaWithouNumCell = sheet.getRange(cell.getRow(), areaWithoutNumCol);
+    areaWithouNumCell.setValue(areaName.trim());
   }
 
   function updateValidationFromEmail(
