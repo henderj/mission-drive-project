@@ -81,10 +81,6 @@ namespace FlushContent {
         Vars.getQualityFolderName()
       );
       const quickFolder = Utils.getFolder(folder, Vars.getQuickFolderName());
-      const prefix = Utils.getFolderPrefix(
-        name,
-        Vars.getContentFolderSuffixes()
-      );
       const zoneFolder = Utils.findParentZoneFolder(
         folder,
         Vars.getZoneFolderSuffix()
@@ -98,8 +94,8 @@ namespace FlushContent {
       }
 
       if (qualityFolder != null)
-        archiveFolder(qualityFolder, zoneFolder, prefix);
-      if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, prefix);
+        archiveFolder(qualityFolder, zoneFolder, name);
+      if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, name);
 
       sheetLogger.Log(
         `Creating new Quality and Quick content folders in ${name}...`
@@ -145,7 +141,7 @@ namespace FlushContent {
 
     const areaArchiveFolder = Utils.getFolder(
       currentDateFolder,
-      areaName + " Area",
+      areaName,
       true
     );
 
