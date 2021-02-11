@@ -131,11 +131,6 @@ namespace FlushContent {
       // file.moveTo(archiveFolder);
       (file as any).moveTo(archiveFolder);
     }
-
-    // folderToArchive.setTrashed(true);
-
-    // folderToArchive.moveTo(currentDateFolder);
-    // (folderToArchive as any).moveTo(archiveFolder);
   }
 
   function getOrCreateArchiveFolder(
