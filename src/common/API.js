@@ -61,7 +61,7 @@ function flushContent() {
   const ui = SpreadsheetApp.getUi();
   const result = ui.alert(
     "Continue?",
-    `You are about to completely flush out the Social Media content! Are you sure you want to continue? 
+    `You are about to archive all Social Media content! Are you sure you want to continue? 
     
     (Content will not be deleted, but it will be archived.)`,
     ui.ButtonSet.YES_NO
@@ -69,9 +69,9 @@ function flushContent() {
 
   if (result != ui.Button.YES) return;
 
-  SheetLogger.SheetLogger.Log("Flushing Content...");
+  SheetLogger.SheetLogger.Log("Archiving Content...");
   FlushContent.archiveContentFolders();
-  SheetLogger.SheetLogger.Log("Done Flushing Content!");
+  SheetLogger.SheetLogger.Log("Done Archiving Content!");
 }
 
 function updateFolderPermissions() {
