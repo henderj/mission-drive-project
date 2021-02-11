@@ -212,7 +212,7 @@ namespace Variables {
     folder: GoogleAppsScript.Drive.Folder
   ): string {
     const folderName: string = folder.getName();
-    const prefix = Utils.getFolderPrefix(folderName);
+    const prefix = Utils.getFolderPrefix(folderName, getContentFolderSuffixes());
     Logger.log("folder prefix: %s.", prefix);
 
     return prefix + getArchiveFolderSuffix();
