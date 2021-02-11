@@ -51,7 +51,7 @@ function scanZoneFolders(){
 }
 
 function test() {
-  FlushContent.renameAllContentFolders();
+  FlushContent.createAllArchiveFolders();
 }
 
 function flushContent() {

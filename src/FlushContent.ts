@@ -12,12 +12,38 @@ namespace FlushContent {
   export function renameAllContentFolders(): void {
     const func = (folder: GoogleAppsScript.Drive.Folder) => {
       const name = folder.getName();
-      if(!name.includes("Folder")) return;
+      if (!name.includes("Folder")) return;
 
       const newName = name.substring(0, name.indexOf("Folder")).trim();
 
       sheetLogger.Log(`removing " Folder" from ${name}. New name: ${newName}.`);
-      folder.setName(newName);      
+      folder.setName(newName);
+    };
+
+    const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
+    Utils.forEveryContentFolder(
+      zoneDrives,
+      func,
+      Vars.getContentFolderSuffixes()
+    );
+  }
+
+  export function createAllArchiveFolders(): void {
+    const func = (folder: GoogleAppsScript.Drive.Folder) => {
+      const name = folder.getName();
+      if (!isAreaFolder(name)) return;
+      sheetLogger.Log(`creating archive folder for ${name}...`);
+      const zoneFolder = Utils.findParentZoneFolder(
+        folder,
+        Vars.getZoneFolderSuffix()
+      );
+      if (zoneFolder == null) {
+        sheetLogger.Log(
+          `Error! Could not find a zone folder for ${name}. Returning...`
+        );
+        return;
+      }
+      getOrCreateArchiveFolder(zoneFolder, name);
     };
 
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
@@ -46,7 +72,7 @@ namespace FlushContent {
   ): void {
     sheetLogger.Log(`Searching through ${folder.getName()}...`);
     const name = folder.getName();
-    if (name.toLowerCase().includes(Vars.getAreaFolderSuffix().toLowerCase())) {
+    if (isAreaFolder(name)) {
       sheetLogger.Log(
         `Found Area Folder! (${name}) Archiving and/or creating content folders...`
       );
@@ -55,7 +81,10 @@ namespace FlushContent {
         Vars.getQualityFolderName()
       );
       const quickFolder = Utils.getFolder(folder, Vars.getQuickFolderName());
-      const prefix = Utils.getFolderPrefix(name, Vars.getContentFolderSuffixes());
+      const prefix = Utils.getFolderPrefix(
+        name,
+        Vars.getContentFolderSuffixes()
+      );
       const zoneFolder = Utils.findParentZoneFolder(
         folder,
         Vars.getZoneFolderSuffix()
@@ -80,12 +109,28 @@ namespace FlushContent {
     }
   }
 
+  function isAreaFolder(name: string) {
+    return name
+      .toLowerCase()
+      .includes(Vars.getAreaFolderSuffix().toLowerCase());
+  }
+
   function archiveFolder(
     folderToArchive: GoogleAppsScript.Drive.Folder,
     zoneFolder: GoogleAppsScript.Drive.Folder,
     areaName: string
   ): void {
     sheetLogger.Log(`Archiving folder ${folderToArchive}.`);
+
+    const areaArchiveFolder = getOrCreateArchiveFolder(zoneFolder, areaName);
+    // folderToArchive.moveTo(currentDateFolder);
+    (folderToArchive as any).moveTo(areaArchiveFolder);
+  }
+
+  function getOrCreateArchiveFolder(
+    zoneFolder: GoogleAppsScript.Drive.Folder,
+    areaName: string
+  ): GoogleAppsScript.Drive.Folder {
     const archiveFolder = Utils.getFolder(
       zoneFolder,
       Vars.getArchiveFolderName(zoneFolder),
@@ -103,7 +148,7 @@ namespace FlushContent {
       areaName + " Area",
       true
     );
-    // folderToArchive.moveTo(currentDateFolder);
-    (folderToArchive as any).moveTo(areaArchiveFolder);
+
+    return areaArchiveFolder;
   }
 }
