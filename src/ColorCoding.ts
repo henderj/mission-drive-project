@@ -105,6 +105,7 @@ namespace ColorCoding {
           `close match of at least 90% (${matchLevel}). setting color to yellow`
         );
         cell.setBackground(yellow);
+        return;
       }
 
       if (matchLevel > 1) {
