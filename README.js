@@ -45,13 +45,9 @@ Every transfer day, starting on 2/23/2021, three functions run around 2AM.
          |     ...
          |- Lansing Archive
          |--|- Feb 2021
-            |--|- Lansing Area
-               |--|- Quality Content
-               |  |- Quick Content
-               |- Meridian Area
-                  ...
-
-         
+            |--|- Quality Content
+               |- Quick Content
+                        
 
   - Settings
       -- ZoneDrivesID
