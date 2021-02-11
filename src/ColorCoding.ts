@@ -26,10 +26,10 @@ namespace ColorCoding {
   /*
     
     matchLevel:
-    0 (red)     There is no folder within the parent folder that matches the value
-    (0,1) (color between red - green) There is at least one folder that has a similar name to the value
-    1 (green)   There is exactly one folder that has a name that exactly matches the value
-    2 (pink)  There is more than one folder that has a name that exactly matches the value
+    [0,0.9] (red)     There is no folder within the parent folder that matches the value
+    [0.9,1] (yellow)  There is at least one folder that has at least a 90% similar name to the value
+    1 (green)         There is exactly one folder that has a name that exactly matches the value
+    2 (pink)          There is more than one folder that has a name that exactly matches the value
 
     */
 
@@ -56,6 +56,7 @@ namespace ColorCoding {
         closestMatch: "",
       });
     });
+    1;
 
     const zoneDrivesFolder = DriveApp.getFolderById(Vars.getZoneDrivesID());
 
@@ -78,7 +79,8 @@ namespace ColorCoding {
         Vars.getContentFolderSuffixes()
       );
 
-      if (data.suffix.toLowerCase() != folderSuffix.toLowerCase()) data.matchLevel = 0;
+      if (data.suffix.toLowerCase() != folderSuffix.toLowerCase())
+        data.matchLevel = 0;
 
       const cell = data.cell;
       const matchLevel = data.matchLevel;
@@ -90,13 +92,19 @@ namespace ColorCoding {
         }; closest match - ${data.closestMatch}; match level ${matchLevel}`
       );
 
-      if (matchLevel < 1) {
-        const color = "#" + gradient.colorAt(matchLevel);
+      if (matchLevel < 0.9) {
         sheetLogger.Log(
-          `no or close match (${matchLevel}). setting color to ${color}...`
+          `no match over 90% (${matchLevel}). setting color to red...`
         );
-        cell.setBackground(color);
+        cell.setBackground(red);
         return;
+      }
+
+      if (matchLevel >= 0.9 && matchLevel < 1) {
+        sheetLogger.Log(
+          `close match of at least 90% (${matchLevel}). setting color to yellow`
+        );
+        cell.setBackground(yellow);
       }
 
       if (matchLevel > 1) {
