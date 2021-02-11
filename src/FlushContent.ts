@@ -94,14 +94,19 @@ namespace FlushContent {
         return;
       }
 
-      if (qualityFolder != null) archiveFolder(qualityFolder, zoneFolder, quailtyFolderName);
-      if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, quickFolderName);
+      if (qualityFolder != null) {
+        archiveFolder(qualityFolder, zoneFolder, quailtyFolderName);
+      } else {
+        sheetLogger.Log(`Creating new Quality content folder in ${name}...`);
+        folder.createFolder(Vars.getQualityFolderName());
+      }
 
-      // sheetLogger.Log(
-      //   `Creating new Quality and Quick content folders in ${name}...`
-      // );
-      // folder.createFolder(Vars.getQualityFolderName());
-      // folder.createFolder(Vars.getQuickFolderName());
+      if (quickFolder != null) {
+        archiveFolder(quickFolder, zoneFolder, quickFolderName);
+      } else {
+        sheetLogger.Log(`Creating new Quick content folder in ${name}...`);
+        folder.createFolder(Vars.getQuickFolderName());
+      }
     }
   }
 
