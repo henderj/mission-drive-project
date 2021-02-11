@@ -68,10 +68,17 @@ namespace ColorCoding {
     );
 
     const gradient = new Rbow.Rainbow();
-    gradient.setSpectrum(red, yellow, yellowgreen).setNumberRange(0, 1);
+    gradient.setSpectrum(red, yellow).setNumberRange(0, 1);
 
     cellsData.forEach((data) => {
       if (data.name == "") return;
+
+      const folderSuffix = Utils.getFolderSuffix(
+        data.closestMatch,
+        Vars.getContentFolderSuffixes()
+      );
+
+      if (data.suffix.toLowerCase() != folderSuffix.toLowerCase()) data.matchLevel = 0;
 
       const cell = data.cell;
       const matchLevel = data.matchLevel;
@@ -109,14 +116,9 @@ namespace ColorCoding {
   ): NameMatchLevel[] {
     // sheetLogger.Log("testing folder ${}", folder.getName());
     const folderName = folder.getName();
-    const folderSuffix = Utils.getFolderSuffix(
-      folderName,
-      Vars.getContentFolderSuffixes()
-    );
 
     cellsData.forEach((cell) => {
       if (cell.name == "") return;
-      if (cell.suffix.toLowerCase() != folderSuffix.toLowerCase()) return;
 
       const fullName = cell.name + cell.suffix;
 
