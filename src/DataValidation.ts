@@ -1,13 +1,13 @@
 import { M_Utils } from "./common/Utils";
 import { Variables } from "./common/Variables";
 
-export { DataValidation };
+export { DataCompletion };
 
-namespace DataValidation {
+namespace DataCompletion {
   const Vars = Variables;
   const Utils = M_Utils;
 
-  export function updateDataValidation(
+  export function updateDataCompletion(
     e: GoogleAppsScript.Events.SheetsOnEdit
   ): void {
     const range = e.range;

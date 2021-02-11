@@ -111,7 +111,7 @@ function onSpreadsheetEdit(e) {
   // Logger.log("edited!")
   if (e.range.getGridId() == Variables.getPermissionsID()) {
     Logger.log("Updating data validation for %s ...", e.range.getA1Notation());
-    DataValidation.updateDataValidation(e);
+    DataCompletion.updateDataCompletion(e);
     Logger.log(
       "Finished upated data validation for %s.",
       e.range.getA1Notation()
