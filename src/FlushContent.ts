@@ -76,11 +76,12 @@ namespace FlushContent {
       sheetLogger.Log(
         `Found Area Folder! (${name}) Archiving and/or creating content folders...`
       );
-      const qualityFolder = Utils.getFolder(
-        folder,
-        Vars.getQualityFolderName()
-      );
-      const quickFolder = Utils.getFolder(folder, Vars.getQuickFolderName());
+      const quailtyFolderName = Vars.getQualityFolderName();
+      const quickFolderName = Vars.getQuickFolderName();
+
+      const qualityFolder = Utils.getFolder(folder, quailtyFolderName);
+      const quickFolder = Utils.getFolder(folder, quickFolderName);
+
       const zoneFolder = Utils.findParentZoneFolder(
         folder,
         Vars.getZoneFolderSuffix()
@@ -93,9 +94,8 @@ namespace FlushContent {
         return;
       }
 
-      if (qualityFolder != null)
-        archiveFolder(qualityFolder, zoneFolder, name);
-      if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, name);
+      if (qualityFolder != null) archiveFolder(qualityFolder, zoneFolder, quailtyFolderName);
+      if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, quickFolderName);
 
       sheetLogger.Log(
         `Creating new Quality and Quick content folders in ${name}...`
@@ -114,14 +114,14 @@ namespace FlushContent {
   function archiveFolder(
     folderToArchive: GoogleAppsScript.Drive.Folder,
     zoneFolder: GoogleAppsScript.Drive.Folder,
-    areaName: string
+    contentTypeName: string
   ): void {
     sheetLogger.Log(`Archiving folder ${folderToArchive}.`);
 
-    const archiveFolder = getOrCreateArchiveFolder(zoneFolder, areaName);
+    const archiveFolder = getOrCreateArchiveFolder(zoneFolder, contentTypeName);
 
     const fileIterator = folderToArchive.getFiles();
-    while(fileIterator.hasNext()){
+    while (fileIterator.hasNext()) {
       const file = fileIterator.next();
       // file.moveTo(archiveFolder);
       (file as any).moveTo(archiveFolder);
