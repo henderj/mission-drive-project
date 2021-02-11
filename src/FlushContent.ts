@@ -97,11 +97,11 @@ namespace FlushContent {
       if (qualityFolder != null) archiveFolder(qualityFolder, zoneFolder, quailtyFolderName);
       if (quickFolder != null) archiveFolder(quickFolder, zoneFolder, quickFolderName);
 
-      sheetLogger.Log(
-        `Creating new Quality and Quick content folders in ${name}...`
-      );
-      folder.createFolder(Vars.getQualityFolderName());
-      folder.createFolder(Vars.getQuickFolderName());
+      // sheetLogger.Log(
+      //   `Creating new Quality and Quick content folders in ${name}...`
+      // );
+      // folder.createFolder(Vars.getQualityFolderName());
+      // folder.createFolder(Vars.getQuickFolderName());
     }
   }
 
@@ -127,7 +127,7 @@ namespace FlushContent {
       (file as any).moveTo(archiveFolder);
     }
 
-    folderToArchive.setTrashed(true);
+    // folderToArchive.setTrashed(true);
 
     // folderToArchive.moveTo(currentDateFolder);
     // (folderToArchive as any).moveTo(archiveFolder);
