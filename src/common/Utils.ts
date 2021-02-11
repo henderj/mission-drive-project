@@ -145,12 +145,19 @@ namespace M_Utils {
     return costs[s2.length];
   }
 
-  export function getFolderPrefix(folderName: string): string {
-    const split = folderName.split(" ");
-    if (split[split.length - 1].toLowerCase() != "folder") return "";
-    const suffix = split[split.length - 2] + " " + split[split.length - 1];
-    const prefix = folderName.substring(0, folderName.indexOf(suffix)).trim();
-    return prefix;
+  export function getFolderPrefix(
+    folderName: string,
+    possibleSuffixes: string[]
+  ): string {
+    let returnValue = "";
+    possibleSuffixes.forEach((suffix) => {
+      const index = folderName.indexOf(suffix);
+      if (index >= 0) {
+        returnValue = folderName.substring(0, index).trim();
+      }
+    });
+
+    return returnValue;
   }
 
   export function getFolderSuffix(

@@ -30,36 +30,40 @@ describe("test stringSimilarity()", () => {
 });
 
 describe("test getFolderPrefix()", () => {
-  it("given 'test Zone Folder' should return 'test'", () => {
-    expect(M_Utils.getFolderPrefix("test Zone Folder")).toBe("test");
+  let suffixes = [];
+  beforeAll(() => {
+    suffixes = [" Zone", " District", " Area"];
   });
-  it("given 'test District Folder' should return 'test'", () => {
-    expect(M_Utils.getFolderPrefix("test District Folder")).toBe("test");
+  it("given 'test Zone' and [' Zone', ' District', ' Area'] should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test Zone", suffixes)).toBe("test");
   });
-  it("given 'test Area Folder' should return 'test'", () => {
-    expect(M_Utils.getFolderPrefix("test Area Folder")).toBe("test");
+  it("given 'test District' and [' Zone', ' District', ' Area'] should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test District", suffixes)).toBe("test");
   });
-  it("given 'test test Area Folder' should return 'test test'", () => {
-    expect(M_Utils.getFolderPrefix("test test Area Folder")).toBe("test test");
+  it("given 'test Area' and [' Zone', ' District', ' Area'] should return 'test'", () => {
+    expect(M_Utils.getFolderPrefix("test Area", suffixes)).toBe("test");
+  });
+  it("given 'test test Area' and [' Zone', ' District', ' Area'] should return 'test test'", () => {
+    expect(M_Utils.getFolderPrefix("test test Area", suffixes)).toBe("test test");
   });
 });
 
 describe("test getFolderSuffix()", () => {
   let suffixes = [];
   beforeAll(() => {
-    suffixes = [" Zone Folder", " District Folder", " Area Folder"];
+    suffixes = [" Zone", " District", " Area"];
   });
 
-  it("given 'test Zone Folder' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ' Zone Folder'", () => {
-    expect(M_Utils.getFolderSuffix("test Zone Folder", suffixes)).toBe(" Zone Folder");
+  it("given 'test Zone' and [' Zone', ' District', ' Area'] should return ' Zone'", () => {
+    expect(M_Utils.getFolderSuffix("test Zone", suffixes)).toBe(" Zone");
   });
-  it("given 'test District Folder' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ' District Folder'", () => {
-    expect(M_Utils.getFolderSuffix("test District Folder", suffixes)).toBe(" District Folder");
+  it("given 'test District' and [' Zone', ' District', ' Area'] should return ' District'", () => {
+    expect(M_Utils.getFolderSuffix("test District", suffixes)).toBe(" District");
   });
-  it("given 'test Area Folder' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ' Area Folder'", () => {
-    expect(M_Utils.getFolderSuffix("test Area Folder", suffixes)).toBe(" Area Folder");
+  it("given 'test Area' and [' Zone', ' District', ' Area'] should return ' Area'", () => {
+    expect(M_Utils.getFolderSuffix("test Area", suffixes)).toBe(" Area");
   });
-  it("given 'test test' and [' Zone Folder', ' District Folder', ' Area Folder'] should return ''", () => {
+  it("given 'test test' and [' Zone', ' District', ' Area'] should return ''", () => {
     expect(M_Utils.getFolderSuffix("test test", suffixes)).toBe("");
   });
 });
