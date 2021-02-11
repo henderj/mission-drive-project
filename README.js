@@ -35,6 +35,24 @@ Every transfer day, starting on 2/23/2021, three functions run around 2AM.
     is created if there is none). It then creates new Quality and Quick Content
     folders.
 
+  - Sample Folder Structure:
+      |- Lansing Zone
+      |--|- Lansing District
+         |--|- Lansing Area
+         |  |--|- Quality Content
+         |  |  |- Quick Content
+         |  |- Meridian Area
+         |     ...
+         |- Lansing Archive
+         |--|- Feb 2021
+            |--|- Lansing Area
+               |--|- Quality Content
+               |  |- Quick Content
+               |- Meridian Area
+                  ...
+
+         
+
   - Settings
       -- ZoneDrivesID
       -- AreaFolderSuffix
