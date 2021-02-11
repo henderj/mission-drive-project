@@ -9,6 +9,25 @@ namespace FlushContent {
   const Utils = M_Utils;
   const sheetLogger = SheetLogger.SheetLogger;
 
+  export function renameAllContentFolders(): void {
+    const func = (folder: GoogleAppsScript.Drive.Folder) => {
+      const name = folder.getName();
+      if(!name.includes("Folder")) return;
+
+      const newName = name.substring(0, name.indexOf("Folder")).trim();
+
+      sheetLogger.Log(`removing " Folder" from ${name}. New name: ${newName}.`);
+      folder.setName(newName);      
+    };
+
+    const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
+    Utils.forEveryContentFolder(
+      zoneDrives,
+      func,
+      Vars.getContentFolderSuffixes()
+    );
+  }
+
   export function archiveContentFolders(): void {
     sheetLogger.Log("Getting Zone drives folder...");
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
@@ -36,7 +55,7 @@ namespace FlushContent {
         Vars.getQualityFolderName()
       );
       const quickFolder = Utils.getFolder(folder, Vars.getQuickFolderName());
-      const prefix = Utils.getFolderPrefix(name);
+      const prefix = Utils.getFolderPrefix(name, Vars.getContentFolderSuffixes());
       const zoneFolder = Utils.findParentZoneFolder(
         folder,
         Vars.getZoneFolderSuffix()

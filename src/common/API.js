@@ -50,10 +50,8 @@ function scanZoneFolders(){
   SheetLogger.SheetLogger.Log("Done Scanning Zone Folders!");
 }
 
-
 function test() {
-  const range = SpreadsheetApp.getSelection().getActiveRange();
-  ColorCoding.updateColorCodingForRange(range, Variables.getAreaFolderSuffix());
+  FlushContent.renameAllContentFolders();
 }
 
 function flushContent() {
