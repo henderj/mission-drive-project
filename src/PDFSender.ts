@@ -173,7 +173,7 @@ namespace PDFSender {
     const numColsToCopy = responsesSheet.getMaxColumns();
     let nextRowToPasteIn = 2;
 
-    for (let i = 2; i < responsesDataRange.getNumRows(); i++) {
+    for (let i = 2; i <= responsesDataRange.getNumRows(); i++) {
       const emailCell = responsesDataRange.getCell(i, emailCol);
       const email: string = emailCell
         .getValue()
@@ -183,7 +183,6 @@ namespace PDFSender {
       if (!emails.includes(email)) {
         continue;
       }
-
       const rowToCopy = responsesSheet.getRange(i, 1, 1, numColsToCopy); // get the entire row of the matching email
       const rangeToPasteIn = sheetToPasteIn.getRange(nextRowToPasteIn, 1);
       rowToCopy.copyTo(rangeToPasteIn, { contentsOnly: true });

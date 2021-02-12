@@ -20,40 +20,41 @@ namespace DataCompletion {
     if (cell == null) return;
     const col = cell.getColumn();
     const areaCol = Vars.getAreaColNum();
-    const areaWithoutNum = Vars.getAreaWithoutNumCol();
-    const districtCol = Vars.getDistrictColNum();
-    let newCell = null;
     if (col == areaCol) {
-      newCell = updateAreaWithoutNumCell(cell);
+      const sheet = cell.getSheet();
+      const row = sheet.getRange(cell.getRow(), 1, 1, sheet.getMaxColumns());
+      Logger.log("row: %s", row.getA1Notation());
+      updateAreaWithoutNumCell(row);
+      updateDistrictCell(row);
+      updateZoneCell(row);
+      updateAccessLevelCell(row);
     }
-    if (col == areaWithoutNum) {
-      newCell = updateDistrictCell(cell);
-    }
-    if(col == districtCol){
-      newCell = updateZoneCell(cell);
-    }
-    updateDataCompletionForCell(newCell);
   }
 
   function updateAreaWithoutNumCell(
-    cell: GoogleAppsScript.Spreadsheet.Range
+    row: GoogleAppsScript.Spreadsheet.Range
   ): GoogleAppsScript.Spreadsheet.Range {
-    const sheet = cell.getSheet();
-    const value: string = cell.getValue().toString();
+    const sheet = row.getSheet();
+    Logger.log(Vars.getAreaColNum());
+    const areaCell = row.getCell(1, Vars.getAreaColNum());
+    const value: string = areaCell.getValue().toString();
     let areaName = value;
     if (Utils.hasNumber(value)) areaName = Utils.removeNumbers(value);
     const areaWithoutNumCol = Vars.getAreaWithoutNumCol();
-    const areaWithouNumCell = sheet.getRange(cell.getRow(), areaWithoutNumCol);
+    const areaWithouNumCell = sheet.getRange(
+      areaCell.getRow(),
+      areaWithoutNumCol
+    );
     areaWithouNumCell.setValue(areaName.trim());
     return areaWithouNumCell;
   }
 
-  function updateDistrictCell(
-    cell: GoogleAppsScript.Spreadsheet.Range
-  ): GoogleAppsScript.Spreadsheet.Range {
-    if(cell.getValue() == '') return null;
-    const sheet = cell.getSheet();
-    const areaName: string = cell.getValue().toString();
+  function updateDistrictCell(row: GoogleAppsScript.Spreadsheet.Range): void {
+    const areaWithoutNumCell = row.getCell(1, Vars.getAreaWithoutNumCol());
+
+    if (areaWithoutNumCell.getValue() == "") return null;
+    const sheet = areaWithoutNumCell.getSheet();
+    const areaName: string = areaWithoutNumCell.getValue().toString();
     const areaRange = Vars.getCompleteAreaRange();
     const districtRange = areaRange.getSheet().getRange("A2:A");
 
@@ -63,21 +64,21 @@ namespace DataCompletion {
     const district = districtCell.getValue();
 
     const districtCol = Vars.getDistrictColNum();
-    const cellToSet = sheet.getRange(cell.getRow(), districtCol);
+    const cellToSet = sheet.getRange(areaWithoutNumCell.getRow(), districtCol);
 
     cellToSet.setValue(district);
-    return cellToSet;
   }
 
-  function updateZoneCell(
-    cell: GoogleAppsScript.Spreadsheet.Range
-  ): GoogleAppsScript.Spreadsheet.Range {
+  function updateZoneCell(row: GoogleAppsScript.Spreadsheet.Range): void {
+    const cell = row.getCell(1, Vars.getDistrictColNum());
     const sheet = cell.getSheet();
     const districtName: string = cell.getValue().toString();
     const districtRange = Vars.getCompleteDistrictRange();
     const zoneRange = Vars.getZoneRange();
 
-    const districtCell = districtRange.createTextFinder(districtName).findNext();
+    const districtCell = districtRange
+      .createTextFinder(districtName)
+      .findNext();
     const districtCellRow = districtCell.getRow() - 1;
     const zoneCell = zoneRange.getCell(districtCellRow, 1);
     const zone = zoneCell.getValue();
@@ -86,6 +87,32 @@ namespace DataCompletion {
     const cellToSet = sheet.getRange(cell.getRow(), zoneCol);
 
     cellToSet.setValue(zone);
-    return cellToSet;
+  }
+
+  function updateAccessLevelCell(
+    row: GoogleAppsScript.Spreadsheet.Range
+  ): void {
+    const areaWithNumCell = row.getCell(1, Vars.getAreaColNum());
+    if (areaWithNumCell == null || areaWithNumCell.getValue() == "") return;
+
+    const sheet = areaWithNumCell.getSheet();
+    const areaName: string = areaWithNumCell.getValue().toString();
+
+    const accessLevelMap = Vars.getAccessLevelRange();
+
+    const areaAccessLevelCell = accessLevelMap
+      .createTextFinder(areaName)
+      .findNext();
+    if (areaAccessLevelCell == null) return;
+
+    const accessLevelCol = areaAccessLevelCell.getColumn();
+    const accessLevel = accessLevelMap.getCell(1, accessLevelCol).getValue();
+
+    const cellToSet = sheet.getRange(
+      areaWithNumCell.getRow(),
+      Vars.getAccessLevelColNum()
+    );
+
+    cellToSet.setValue(accessLevel);
   }
 }

@@ -204,7 +204,7 @@ namespace Variables {
   }
 
   export function getAccessLevelRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getAccessLevelSheet().getRange("A1:A");
+    return getAccessLevelSheet().getDataRange();
   }
 
   export function getPermissionsRange(): GoogleAppsScript.Spreadsheet.Range {

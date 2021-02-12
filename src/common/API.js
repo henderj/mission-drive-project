@@ -67,7 +67,7 @@ function scanZoneFolders(){
 }
 
 function test() {
-  FlushContent.createAllArchiveFolders();
+  PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", true);
 }
 
 function flushContent() {
