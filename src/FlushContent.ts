@@ -11,13 +11,22 @@ namespace FlushContent {
 
   export function renameAllContentFolders(): void {
     const func = (folder: GoogleAppsScript.Drive.Folder) => {
-      const name = folder.getName();
-      if (!name.includes("Folder")) return;
+      try {
+        const name = folder.getName();
+        if (!name.includes("Folder")) return;
 
-      const newName = name.substring(0, name.indexOf("Folder")).trim();
+        const newName = name.substring(0, name.indexOf("Folder")).trim();
 
-      sheetLogger.Log(`removing " Folder" from ${name}. New name: ${newName}.`);
-      folder.setName(newName);
+        sheetLogger.Log(
+          `removing " Folder" from ${name}. New name: ${newName}.`
+        );
+        folder.setName(newName);
+      } catch (e) {
+        sheetLogger.Log(
+          `ERROR - error occurred while checking ${folder.getName()}. continuing to next folder...
+          Error Message: ${e.toString()}`
+        );
+      }
     };
 
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
@@ -30,20 +39,27 @@ namespace FlushContent {
 
   export function createAllArchiveFolders(): void {
     const func = (folder: GoogleAppsScript.Drive.Folder) => {
-      const name = folder.getName();
-      if (!isAreaFolder(name)) return;
-      sheetLogger.Log(`creating archive folder for ${name}...`);
-      const zoneFolder = Utils.findParentZoneFolder(
-        folder,
-        Vars.getZoneFolderSuffix()
-      );
-      if (zoneFolder == null) {
-        sheetLogger.Log(
-          `Error! Could not find a zone folder for ${name}. Returning...`
+      try {
+        const name = folder.getName();
+        if (!isAreaFolder(name)) return;
+        sheetLogger.Log(`creating archive folder for ${name}...`);
+        const zoneFolder = Utils.findParentZoneFolder(
+          folder,
+          Vars.getZoneFolderSuffix()
         );
-        return;
+        if (zoneFolder == null) {
+          sheetLogger.Log(
+            `Error! Could not find a zone folder for ${name}. Returning...`
+          );
+          return;
+        }
+        getOrCreateArchiveFolder(zoneFolder, name);
+      } catch (e) {
+        sheetLogger.Log(
+          `ERROR - error occurred while checking ${folder.getName()}. continuing to next folder...
+          Error Message: ${e.toString()}`
+        );
       }
-      getOrCreateArchiveFolder(zoneFolder, name);
     };
 
     const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
@@ -70,43 +86,50 @@ namespace FlushContent {
   function archiveContentFoldersIfAreaFolder(
     folder: GoogleAppsScript.Drive.Folder
   ): void {
-    sheetLogger.Log(`Searching through ${folder.getName()}...`);
-    const name = folder.getName();
-    if (isAreaFolder(name)) {
-      sheetLogger.Log(
-        `Found Area Folder! (${name}) Archiving and/or creating content folders...`
-      );
-      const quailtyFolderName = Vars.getQualityFolderName();
-      const quickFolderName = Vars.getQuickFolderName();
-
-      const qualityFolder = Utils.getFolder(folder, quailtyFolderName);
-      const quickFolder = Utils.getFolder(folder, quickFolderName);
-
-      const zoneFolder = Utils.findParentZoneFolder(
-        folder,
-        Vars.getZoneFolderSuffix()
-      );
-
-      if (zoneFolder == null) {
+    try {
+      sheetLogger.Log(`Searching through ${folder.getName()}...`);
+      const name = folder.getName();
+      if (isAreaFolder(name)) {
         sheetLogger.Log(
-          `Error! Could not find a zone folder for ${name}. Returning...`
+          `Found Area Folder! (${name}) Archiving and/or creating content folders...`
         );
-        return;
-      }
+        const quailtyFolderName = Vars.getQualityFolderName();
+        const quickFolderName = Vars.getQuickFolderName();
 
-      if (qualityFolder != null) {
-        archiveFolder(qualityFolder, zoneFolder, quailtyFolderName);
-      } else {
-        sheetLogger.Log(`Creating new Quality content folder in ${name}...`);
-        folder.createFolder(Vars.getQualityFolderName());
-      }
+        const qualityFolder = Utils.getFolder(folder, quailtyFolderName);
+        const quickFolder = Utils.getFolder(folder, quickFolderName);
 
-      if (quickFolder != null) {
-        archiveFolder(quickFolder, zoneFolder, quickFolderName);
-      } else {
-        sheetLogger.Log(`Creating new Quick content folder in ${name}...`);
-        folder.createFolder(Vars.getQuickFolderName());
+        const zoneFolder = Utils.findParentZoneFolder(
+          folder,
+          Vars.getZoneFolderSuffix()
+        );
+
+        if (zoneFolder == null) {
+          sheetLogger.Log(
+            `Error! Could not find a zone folder for ${name}. Returning...`
+          );
+          return;
+        }
+
+        if (qualityFolder != null) {
+          archiveFolder(qualityFolder, zoneFolder, quailtyFolderName);
+        } else {
+          sheetLogger.Log(`Creating new Quality content folder in ${name}...`);
+          folder.createFolder(Vars.getQualityFolderName());
+        }
+
+        if (quickFolder != null) {
+          archiveFolder(quickFolder, zoneFolder, quickFolderName);
+        } else {
+          sheetLogger.Log(`Creating new Quick content folder in ${name}...`);
+          folder.createFolder(Vars.getQuickFolderName());
+        }
       }
+    } catch (e) {
+      sheetLogger.Log(
+        `ERROR - error occurred while checking ${folder.getName()}. skipping...
+              Error Message: ${e.toString()}`
+      );
     }
   }
 
@@ -121,15 +144,25 @@ namespace FlushContent {
     zoneFolder: GoogleAppsScript.Drive.Folder,
     contentTypeName: string
   ): void {
-    sheetLogger.Log(`Archiving folder ${folderToArchive}.`);
+    try {
+      sheetLogger.Log(`Archiving folder ${folderToArchive}.`);
 
-    const archiveFolder = getOrCreateArchiveFolder(zoneFolder, contentTypeName);
+      const archiveFolder = getOrCreateArchiveFolder(
+        zoneFolder,
+        contentTypeName
+      );
 
-    const fileIterator = folderToArchive.getFiles();
-    while (fileIterator.hasNext()) {
-      const file = fileIterator.next();
-      // file.moveTo(archiveFolder);
-      (file as any).moveTo(archiveFolder);
+      const fileIterator = folderToArchive.getFiles();
+      while (fileIterator.hasNext()) {
+        const file = fileIterator.next();
+        // file.moveTo(archiveFolder);
+        (file as any).moveTo(archiveFolder);
+      }
+    } catch (e) {
+      sheetLogger.Log(
+        `ERROR - error occurred while archiving ${folderToArchive.getName()}. skipping...
+        Error Message: ${e.toString()}`
+      );
     }
   }
 
@@ -137,24 +170,31 @@ namespace FlushContent {
     zoneFolder: GoogleAppsScript.Drive.Folder,
     contentTypeName: string
   ): GoogleAppsScript.Drive.Folder {
-    const archiveFolder = Utils.getFolder(
-      zoneFolder,
-      Vars.getArchiveFolderName(zoneFolder),
-      true
-    );
+    try {
+      const archiveFolder = Utils.getFolder(
+        zoneFolder,
+        Vars.getArchiveFolderName(zoneFolder),
+        true
+      );
 
-    const currentDateFolder = Utils.getFolder(
-      archiveFolder,
-      Utils.getTodayDateFormatted(),
-      true
-    );
+      const currentDateFolder = Utils.getFolder(
+        archiveFolder,
+        Utils.getTodayDateFormatted(),
+        true
+      );
 
-    const contentTypeFolder = Utils.getFolder(
-      currentDateFolder,
-      contentTypeName,
-      true
-    );
+      const contentTypeFolder = Utils.getFolder(
+        currentDateFolder,
+        contentTypeName,
+        true
+      );
 
-    return contentTypeFolder;
+      return contentTypeFolder;
+    } catch (e) {
+      sheetLogger.Log(
+        `ERROR - error occurred while getting or creating archive folder for ${zoneFolder.getName()}. skipping...
+              Error Message: ${e.toString()}`
+      );
+    }
   }
 }
