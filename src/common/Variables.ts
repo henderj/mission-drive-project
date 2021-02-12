@@ -246,4 +246,14 @@ namespace Variables {
   export function getAreaWithoutNumCol(): number {
     return parseInt(getValueOfSetting("PermissionsAreaWithoutNumCol"));
   }
+
+  export function getReroutePDFs(): boolean {
+    const value = getValueOfSetting("ReroutePDFs").toLowerCase().trim();
+    const possibleYes = ['y', 'yes', 't', 'true'];
+    return possibleYes.includes(value);
+  }
+
+  export function getRerouteEmailAddress(): string {
+    return getValueOfSetting("RerouteEmailAddress");
+  }
 }

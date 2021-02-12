@@ -52,10 +52,6 @@ namespace PDFSender {
       isZone ? "zone" : "district"
     }! :)`;
 
-    // \/ \/ \/ \/ \/ \/ //
-    const reroute = "joshua.hendershot@missionary.org";
-    // /\ /\ /\ /\ /\ /\ //
-
     fullInfoSheet.showSheet();
     const fullInfoPDF: GoogleAppsScript.Base.Blob | null = getSpreadsheetAsPDF(
       Vars.getTalentSpreadsheetID(),
@@ -91,17 +87,25 @@ namespace PDFSender {
       pdfs.push(quickInfoPDF);
     }
 
+    const shouldReroute = Vars.getReroutePDFs();
+    const reroute = Vars.getRerouteEmailAddress();
+
     leaderEmails.forEach((email) => {
-      Logger.log(
-        "***DEBUGGING NOTICE*** Would be sending email to %s. Rerouting to %s for testing reasons...",
-        email,
-        reroute
-      );
-      // emailPDFs(pdfs, email, subject, body);
+      if (shouldReroute) {
+        Logger.log(
+          "***DEBUGGING NOTICE*** Would be sending email to %s. Rerouting to %s for testing reasons...",
+          email,
+          reroute
+        );
+        return;
+      }
+      emailPDFs(pdfs, email, subject, body);
       // ^^^^^ Uncomment when ready to send to actual emails.
     });
 
-    emailPDFs(pdfs, reroute, subject, body); // comment this line when you no longer want to reroute emails.
+    if (shouldReroute) {
+      emailPDFs(pdfs, reroute, subject, body); // comment this line when you no longer want to reroute emails.
+    }
   }
 
   function getEmailsInZoneOrDistrict(name: string, isZone: boolean): string[] {
