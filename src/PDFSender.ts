@@ -100,11 +100,10 @@ namespace PDFSender {
         return;
       }
       emailPDFs(pdfs, email, subject, body);
-      // ^^^^^ Uncomment when ready to send to actual emails.
     });
 
     if (shouldReroute) {
-      emailPDFs(pdfs, reroute, subject, body); // comment this line when you no longer want to reroute emails.
+      emailPDFs(pdfs, reroute, subject, body);
     }
   }
 
