@@ -164,15 +164,13 @@ namespace Variables {
   }
 
   export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("CompleteZoneRange"));
-    return getZoneToDistrictMapSheet().getRange(
+    return getInterfaceSpreadsheet().getRangeByName(
       getValueOfSetting("CompleteZoneRange")
     );
   }
 
   export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("CompleteDistrictRange"));
-    return getZoneToDistrictMapSheet().getRange(
+    return getInterfaceSpreadsheet().getRangeByName(
       getValueOfSetting("CompleteDistrictRange")
     );
   }
@@ -197,8 +195,7 @@ namespace Variables {
   }
 
   export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("CompleteAreaRange"));
-    return getDistrictToAreaMapSheet().getRange(
+    return getInterfaceSpreadsheet().getRangeByName(
       getValueOfSetting("CompleteAreaRange")
     );
   }
@@ -249,7 +246,7 @@ namespace Variables {
 
   export function getReroutePDFs(): boolean {
     const value = getValueOfSetting("ReroutePDFs").toLowerCase().trim();
-    const possibleYes = ['y', 'yes', 't', 'true'];
+    const possibleYes = ["y", "yes", "t", "true"];
     return possibleYes.includes(value);
   }
 
