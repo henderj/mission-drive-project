@@ -253,4 +253,12 @@ namespace Variables {
   export function getRerouteEmailAddress(): string {
     return getValueOfSetting("RerouteEmailAddress");
   }
+
+  export function getTransferFunctions(): string {
+    return getValueOfSetting("TransferFunctions");
+  }
+
+  export function getInterfaceSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+    return getInterfaceSheetByID(getValueOfSetting("InterfaceSheetID"));
+  }
 }

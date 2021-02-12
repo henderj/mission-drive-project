@@ -1,6 +1,7 @@
 import { FlushContent as FlushContent } from "./FlushContent";
 import { Permissions } from "./Permissions";
 import { PDFSender } from "./PDFSender";
+import { Variables } from "./common/Variables";
 
 export { Triggers };
 
@@ -8,6 +9,7 @@ namespace Triggers {
   const flushContent = FlushContent;
   const Perms = Permissions;
   const pdfSender = PDFSender;
+  const Vars = Variables;
 
   export function getStartingDate() {
     return new Date(2021, 1, 23);
@@ -37,16 +39,33 @@ namespace Triggers {
   }
 
   function runTransferFunctions(): void {
-    Logger.log("running archiveContentFolders in FlushContent");
-    flushContent.archiveContentFolders();
-    Logger.log("done");
+    const functionMapStrings = Vars.getTransferFunctions().split(",");
+    const functionMap: Map<string, boolean> = new Map();
+    const sheet = Vars.getInterfaceSheet();
 
-    Logger.log("running updatePermissions in Permissions");
-    Perms.updatePermissions();
-    Logger.log("done");
+    functionMapStrings.forEach((str) => {
+      const split = str.split(":");
+      const cell = sheet.getRange(split[0]);
+      const functionName = split[1];
+      functionMap.set(functionName, cell.isChecked());
+    });
 
-    Logger.log("running createAndSendPDFs in PDFSender");
-    pdfSender.createAndSendPDFs();
-    Logger.log("done");
+    if (functionMap.get("archiveContentFolders")) {
+      Logger.log("running archiveContentFolders in FlushContent");
+      flushContent.archiveContentFolders();
+      Logger.log("done");
+    }
+
+    if (functionMap.get("updatePermissions")) {
+      Logger.log("running updatePermissions in Permissions");
+      Perms.updatePermissions();
+      Logger.log("done");
+    }
+
+    if (functionMap.get("createAndSendPDFs")) {
+      Logger.log("running createAndSendPDFs in PDFSender");
+      pdfSender.createAndSendPDFs();
+      Logger.log("done");
+    }
   }
 }
