@@ -32,8 +32,8 @@ function onOpen() {
     .addSeparator()
     .addItem("Archive Content", "flushContent")
     .addItem("Update Folder Access", "updateFolderPermissions")
-    .addSeparator()
-    .addItem("Run Test", "test")
+    // .addSeparator()
+    // .addItem("Run Test", "test")
     .addToUi();
 }
 
