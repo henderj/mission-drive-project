@@ -41,7 +41,7 @@ namespace UpdateFileOwners {
   ) {
     const areaEmail = parentFolder.getParents().next().getOwner();
     sheetLogger.Log(
-      `setting owner of ${file.getName()} to area email: ${areaEmail.getEmail()}`
+      `setting owner of ${file.getName()} to area email: ${areaEmail.getName()}`
     );
     file.setOwner(areaEmail);
   }
