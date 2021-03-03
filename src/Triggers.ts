@@ -11,21 +11,6 @@ namespace Triggers {
   const pdfSender = PDFSender;
   const Vars = Variables;
 
-  export function getStartingDate() {
-    return new Date(2021, 1, 23);
-  }
-
-  export function getNextTransferDate(
-    now: Date,
-    startingDate: Date = getStartingDate()
-  ): Date {
-    let nextDate = startingDate;
-    while (nextDate.getTime() < now.getTime()) {
-      nextDate.setDate(nextDate.getDate() + 7 * 6); // 7 days in a week, 6 weeks in a transfer. gets the date of the next transfer.
-    }
-    return nextDate;
-  }
-
   function setUpRecurringTrigger(): void {
     ScriptApp.newTrigger("runTransferFunctions")
       .timeBased()

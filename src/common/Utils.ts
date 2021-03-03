@@ -196,4 +196,19 @@ namespace M_Utils {
   export function removeNumbers(str: string): string {
     return str.replace(/[0-9]/g, "");
   }
+
+  export function getNextTransferDate(
+    now: Date,
+    startingDate: Date = getStartingDate()
+  ): Date {
+    let nextDate = startingDate;
+    while (nextDate.getTime() < now.getTime()) {
+      nextDate.setDate(nextDate.getDate() + 7 * 6); // 7 days in a week, 6 weeks in a transfer. gets the date of the next transfer.
+    }
+    return nextDate;
+  }
+
+  export function getStartingDate() {
+    return new Date(2021, 1, 23);
+  }
 }

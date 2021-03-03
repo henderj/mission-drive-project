@@ -1,5 +1,5 @@
 function GET_NEXT_TRANSFER_DATE() {
-  const nextDate = Triggers.getNextTransferDate(new Date());
+  const nextDate = Utils.getNextTransferDate(new Date());
   return nextDate;
 }
 
