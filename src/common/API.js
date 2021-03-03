@@ -32,9 +32,16 @@ function onOpen() {
     .addSeparator()
     .addItem("Archive Content", "flushContent")
     .addItem("Update Folder Access", "updateFolderPermissions")
+    .addItem("Update Content File Owners", "updateFileOwner")
     // .addSeparator()
     // .addItem("Run Test", "test")
     .addToUi();
+}
+
+function updateFileOwner(){
+  SheetLogger.SheetLogger.Log("Updating file owners...");
+  UpdateFileOwners.updateOwners();
+  SheetLogger.SheetLogger.Log("Done updating file owners!");
 }
 
 function scanAllFolders(){
