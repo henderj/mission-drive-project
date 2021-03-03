@@ -18,6 +18,7 @@ namespace UpdateFileOwners {
     Utils.forEveryContentFolder(
       DriveApp.getFolderById(Vars.getZoneDrivesID()),
       (folder) => {
+        sheetLogger.Log(`searching folder: ${folder.getName()}`);
         forEachFile(folder, (file) => changeOwnershipToAreaEmail(file, folder));
       },
       folderSuffixes
@@ -31,6 +32,7 @@ namespace UpdateFileOwners {
     const fileIterator = folder.getFiles();
     while (fileIterator.hasNext()) {
       const file = fileIterator.next();
+      sheetLogger.Log(`found file: ${file.getName()}`);
       func(file);
     }
   }
