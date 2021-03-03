@@ -44,7 +44,9 @@ describe("test getFolderPrefix()", () => {
     expect(M_Utils.getFolderPrefix("test Area", suffixes)).toBe("test");
   });
   it("given 'test test Area' and [' Zone', ' District', ' Area'] should return 'test test'", () => {
-    expect(M_Utils.getFolderPrefix("test test Area", suffixes)).toBe("test test");
+    expect(M_Utils.getFolderPrefix("test test Area", suffixes)).toBe(
+      "test test"
+    );
   });
 });
 
@@ -58,7 +60,9 @@ describe("test getFolderSuffix()", () => {
     expect(M_Utils.getFolderSuffix("test Zone", suffixes)).toBe(" Zone");
   });
   it("given 'test District' and [' Zone', ' District', ' Area'] should return ' District'", () => {
-    expect(M_Utils.getFolderSuffix("test District", suffixes)).toBe(" District");
+    expect(M_Utils.getFolderSuffix("test District", suffixes)).toBe(
+      " District"
+    );
   });
   it("given 'test Area' and [' Zone', ' District', ' Area'] should return ' Area'", () => {
     expect(M_Utils.getFolderSuffix("test Area", suffixes)).toBe(" Area");
@@ -70,33 +74,33 @@ describe("test getFolderSuffix()", () => {
 
 describe("test hasNumber()", () => {
   it("given 'test' should return false", () => {
-    expect(M_Utils.hasNumber('test')).toBe(false);
-  })
+    expect(M_Utils.hasNumber("test")).toBe(false);
+  });
   it("given '123' should return true", () => {
-    expect(M_Utils.hasNumber('123')).toBe(true);
-  })
+    expect(M_Utils.hasNumber("123")).toBe(true);
+  });
   it("given 'test123' should return true", () => {
-    expect(M_Utils.hasNumber('test123')).toBe(true);
-  })
-})
+    expect(M_Utils.hasNumber("test123")).toBe(true);
+  });
+});
 
 describe("test removeNumbers()", () => {
   it("given 'test' should return 'test'", () => {
-    expect(M_Utils.removeNumbers('test')).toBe('test');
-  })
+    expect(M_Utils.removeNumbers("test")).toBe("test");
+  });
   it("given '123' should return ''", () => {
-    expect(M_Utils.removeNumbers('123')).toBe('');
-  })
+    expect(M_Utils.removeNumbers("123")).toBe("");
+  });
   it("given 'test123' should return 'test'", () => {
-    expect(M_Utils.removeNumbers('test123')).toBe('test');
-  })
+    expect(M_Utils.removeNumbers("test123")).toBe("test");
+  });
   it("given 'test 123' should return 'test '", () => {
-    expect(M_Utils.removeNumbers('test 123')).toBe('test ');
-  })
+    expect(M_Utils.removeNumbers("test 123")).toBe("test ");
+  });
   it("given 't1e2s3t' should return 'test'", () => {
-    expect(M_Utils.removeNumbers('t1e2s3t')).toBe('test');
-  })
-})
+    expect(M_Utils.removeNumbers("t1e2s3t")).toBe("test");
+  });
+});
 
 describe("test getNextTransferDate() with starting date of 2/23/2021", () => {
   let startingDate: Date;
