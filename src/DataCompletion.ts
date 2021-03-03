@@ -11,7 +11,22 @@ namespace DataCompletion {
     e: GoogleAppsScript.Events.SheetsOnEdit
   ): void {
     const range = e.range;
+    // Utils.forEachRangeCell(range, updateDataCompletionForCell);
+    updateDataCompletionForRange(range);
+  }
+
+  export function updateDataCompletionForRange(range: GoogleAppsScript.Spreadsheet.Range){
     Utils.forEachRangeCell(range, updateDataCompletionForCell);
+  }
+
+  export function updateDataCompletionForAll(){
+    const range = Vars.getPermissionsRange();
+    updateDataCompletionForRange(range);
+  }
+
+  export function updateDataCompletionForSelection() {
+    const range = SpreadsheetApp.getSelection().getActiveRange();
+    updateDataCompletionForRange(range);
   }
 
   function updateDataCompletionForCell(

@@ -7,7 +7,6 @@ function GET_NEXT_TRANSFER_DATE() {
 //   return DataCompletion.getDistrict(area.toString());
 // }
 
-
 // function GET_ZONE(district) {
 //   return DataCompletion.getZone(district.toString());
 // }
@@ -28,6 +27,15 @@ function onOpen() {
         .addItem("Scan District Folders", "scanDistrictFolders")
         .addItem("Scan Zone Folders", "scanZoneFolders")
     )
+    .addSubMenu(
+      ui
+        .createMenu("Fill in Area Data")
+        .addItem("Fill in for all areas", "updateDataCompletionAll")
+        .addItem(
+          "Fill in for current selection",
+          "updateDataCompletionSelection"
+        )
+    )
     // .addItem("Scan")
     .addSeparator()
     .addItem("Archive Content", "flushContent")
@@ -38,13 +46,21 @@ function onOpen() {
     .addToUi();
 }
 
-function updateFileOwner(){
+function updateDataCompletionAll() {
+  DataCompletion.updateDataCompletionForAll();
+}
+
+function updateDataCompletionSelection() {
+  DataCompletion.updateDataCompletionForSelection();
+}
+
+function updateFileOwner() {
   SheetLogger.SheetLogger.Log("Updating file owners...");
   UpdateFileOwners.updateOwners();
   SheetLogger.SheetLogger.Log("Done updating file owners!");
 }
 
-function scanAllFolders(){
+function scanAllFolders() {
   SheetLogger.SheetLogger.Log("Scanning All Folders...");
   scanAreaFolders();
   scanDistrictFolders();
@@ -52,21 +68,24 @@ function scanAllFolders(){
   SheetLogger.SheetLogger.Log("Done Scanning All Folders!");
 }
 
-function scanAreaFolders(){
+function scanAreaFolders() {
   SheetLogger.SheetLogger.Log("Scanning Area Folders...");
   const range = Variables.getCompleteAreaRange();
   ColorCoding.updateColorCodingForRange(range, Variables.getAreaFolderSuffix());
   SheetLogger.SheetLogger.Log("Done Scanning Area Folders!");
 }
 
-function scanDistrictFolders(){
+function scanDistrictFolders() {
   SheetLogger.SheetLogger.Log("Scanning District Folders...");
   const range = Variables.getCompleteDistrictRange();
-  ColorCoding.updateColorCodingForRange(range, Variables.getDistrictFolderSuffix());
+  ColorCoding.updateColorCodingForRange(
+    range,
+    Variables.getDistrictFolderSuffix()
+  );
   SheetLogger.SheetLogger.Log("Done Scanning District Folders!");
 }
 
-function scanZoneFolders(){
+function scanZoneFolders() {
   SheetLogger.SheetLogger.Log("Scanning Zone Folders...");
   const range = Variables.getZoneRange();
   ColorCoding.updateColorCodingForRange(range, Variables.getZoneFolderSuffix());

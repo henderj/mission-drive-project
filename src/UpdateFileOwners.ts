@@ -10,18 +10,21 @@ namespace UpdateFileOwners {
   const sheetLogger = SheetLogger.SheetLogger;
 
   export function updateOwners(): void {
-    const folderSuffixes = [
+    const folderNames = [
       Vars.getQuickFolderName(),
       Vars.getQualityFolderName(),
     ];
 
-    Utils.forEveryContentFolder(
+    sheetLogger.Log(`searching folders...`);
+    Utils.forEveryFolder(
       DriveApp.getFolderById(Vars.getZoneDrivesID()),
       (folder) => {
-        sheetLogger.Log(`searching folder: ${folder.getName()}`);
+        const name = folder.getName();
+        sheetLogger.Log(`searching folder: ${name}...`);
+        if (!folderNames.includes(name)) return;
         forEachFile(folder, (file) => changeOwnershipToAreaEmail(file, folder));
       },
-      folderSuffixes
+      true
     );
   }
 
@@ -42,6 +45,12 @@ namespace UpdateFileOwners {
     parentFolder: GoogleAppsScript.Drive.Folder
   ) {
     const areaEmail = parentFolder.getParents().next().getOwner();
+    if (file.getOwner().getEmail() == areaEmail.getEmail()) {
+      sheetLogger.Log(
+        `file ${file.getName()} is already owned by area email. skipping...`
+      );
+      return;
+    }
     sheetLogger.Log(
       `setting owner of ${file.getName()} to area email: ${areaEmail.getName()}`
     );
