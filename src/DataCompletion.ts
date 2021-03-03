@@ -15,11 +15,13 @@ namespace DataCompletion {
     updateDataCompletionForRange(range);
   }
 
-  export function updateDataCompletionForRange(range: GoogleAppsScript.Spreadsheet.Range){
+  export function updateDataCompletionForRange(
+    range: GoogleAppsScript.Spreadsheet.Range
+  ) {
     Utils.forEachRangeCell(range, updateDataCompletionForCell);
   }
 
-  export function updateDataCompletionForAll(){
+  export function updateDataCompletionForAll() {
     const range = Vars.getPermissionsRange();
     updateDataCompletionForRange(range);
   }
@@ -94,6 +96,10 @@ namespace DataCompletion {
     const districtCell = districtRange
       .createTextFinder(districtName)
       .findNext();
+    if (districtCell == null) {
+      Logger.log("couldn't find district: " + districtName);
+      return;
+    }
     const districtCellRow = districtCell.getRow() - 1;
     const zoneCell = zoneRange.getCell(districtCellRow, 1);
     const zone = zoneCell.getValue();
