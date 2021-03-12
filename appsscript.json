@@ -1,14 +1,14 @@
 {
-  "timeZone": "America/New_York",
-  "dependencies": {},
-  "exceptionLogging": "STACKDRIVER",
-  "runtimeVersion": "V8",
-  "sheets": {
-    "macros": [
-      {
-        "menuName": "GET_NEXT_TRANSFER_DATE",
-        "functionName": "GET_NEXT_TRANSFER_DATE"
-      }
-    ]
-  }
+    "timeZone": "America/New_York",
+    "dependencies": {},
+    "exceptionLogging": "STACKDRIVER",
+    "runtimeVersion": "V8",
+    "sheets": {
+        "macros": [
+            {
+                "menuName": "GET_NEXT_TRANSFER_DATE",
+                "functionName": "GET_NEXT_TRANSFER_DATE"
+            }
+        ]
+    }
 }
