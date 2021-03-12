@@ -17,3 +17,4 @@ node_modules/**
 # ignore these files...
 .gitignore
 jest.config.js
+.gitpod.yml
