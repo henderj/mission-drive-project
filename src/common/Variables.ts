@@ -130,7 +130,7 @@ namespace Variables {
     }
 
     export function getZoneToDistrictMapSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-        const key = "";
+        const key = "ZoneToDistrictMapSheet";
         const func = () => {
             const id: string = getZoneToDistrictMapID();
             return getInterfaceSheetByID(id);
@@ -139,7 +139,7 @@ namespace Variables {
     }
 
     export function getDistrictToAreaMapSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-        const key = "";
+        const key = "DistrictToAreaMapSheet";
         const func = () => {
             const id: string = getDistrictToAreaMapID();
             return getInterfaceSheetByID(id);
@@ -148,7 +148,7 @@ namespace Variables {
     }
 
     export function getAccessLevelSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-        const key = "";
+        const key = "AccessLevelSheet";
         const func = () => {
             const id: string = getValueOfSetting("AccessLevelSheetID");
             return getInterfaceSheetByID(id);
@@ -157,7 +157,7 @@ namespace Variables {
     }
 
     export function getPermissionsSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-        const key = "";
+        const key = "PermissionsSheet";
         const func = () => {
             const id: string = getValueOfSetting("PermissionsID");
             return getInterfaceSheetByID(id);
@@ -206,7 +206,7 @@ namespace Variables {
     }
 
     export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
-        const key = "";
+        const key = "ZoneRange";
         const func = () => getInterfaceSpreadsheet().getRangeByName(
             getValueOfSetting("CompleteZoneRange")
         );
@@ -214,7 +214,7 @@ namespace Variables {
     }
 
     export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
-        const key = "";
+        const key = "CompleteDistrictRange";
         const func = () => getInterfaceSpreadsheet().getRangeByName(
             getValueOfSetting("CompleteDistrictRange")
         );
