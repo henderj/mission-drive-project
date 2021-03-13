@@ -57,6 +57,7 @@ namespace DataCompletion {
         const value: string = areaCell.getValue().toString();
         let areaName = value;
         if (Utils.hasNumber(value)) areaName = Utils.removeNumbers(value);
+
         const areaWithoutNumCol = Vars.getAreaWithoutNumCol();
         const areaWithouNumCell = sheet.getRange(
             areaCell.getRow(),
@@ -75,13 +76,20 @@ namespace DataCompletion {
         const areaRange = Vars.getCompleteAreaRange();
         const districtRange = areaRange.getSheet().getRange("A2:A");
 
+        const districtCol = Vars.getDistrictColNum();
+        const cellToSet = sheet.getRange(areaWithoutNumCell.getRow(), districtCol);
+
         const areaCell = areaRange.createTextFinder(areaName).findNext();
+
+        if (areaCell == null) {
+            cellToSet.setValue("");
+            return;
+        }
+
         const areaCellRow = areaCell.getRow() - 1;
         const districtCell = districtRange.getCell(areaCellRow, 1);
         const district = districtCell.getValue();
 
-        const districtCol = Vars.getDistrictColNum();
-        const cellToSet = sheet.getRange(areaWithoutNumCell.getRow(), districtCol);
 
         cellToSet.setValue(district);
     }
@@ -93,19 +101,21 @@ namespace DataCompletion {
         const districtRange = Vars.getCompleteDistrictRange();
         const zoneRange = Vars.getZoneRange();
 
+        const zoneCol = Vars.getZoneColNum();
+        const cellToSet = sheet.getRange(cell.getRow(), zoneCol);
+
         const districtCell = districtRange
             .createTextFinder(districtName)
             .findNext();
         if (districtCell == null) {
             Logger.log("couldn't find district: " + districtName);
+            cellToSet.setValue("");
             return;
         }
         const districtCellRow = districtCell.getRow() - 1;
         const zoneCell = zoneRange.getCell(districtCellRow, 1);
         const zone = zoneCell.getValue();
 
-        const zoneCol = Vars.getZoneColNum();
-        const cellToSet = sheet.getRange(cell.getRow(), zoneCol);
 
         cellToSet.setValue(zone);
     }
@@ -117,6 +127,12 @@ namespace DataCompletion {
         if (areaWithNumCell == null || areaWithNumCell.getValue() == "") return;
 
         const sheet = areaWithNumCell.getSheet();
+
+        const cellToSet = sheet.getRange(
+            areaWithNumCell.getRow(),
+            Vars.getAccessLevelColNum()
+        );
+
         const areaName: string = areaWithNumCell.getValue().toString();
 
         const accessLevelMap = Vars.getAccessLevelRange();
@@ -124,15 +140,14 @@ namespace DataCompletion {
         const areaAccessLevelCell = accessLevelMap
             .createTextFinder(areaName)
             .findNext();
-        if (areaAccessLevelCell == null) return;
+
+        if (areaAccessLevelCell == null) {
+            cellToSet.setValue("");
+            return;
+        }
 
         const accessLevelCol = areaAccessLevelCell.getColumn();
         const accessLevel = accessLevelMap.getCell(1, accessLevelCol).getValue();
-
-        const cellToSet = sheet.getRange(
-            areaWithNumCell.getRow(),
-            Vars.getAccessLevelColNum()
-        );
 
         cellToSet.setValue(accessLevel);
     }
