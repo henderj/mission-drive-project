@@ -2,4 +2,5 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: npm install && npm install -g @google/clasp
+  - init: npm install
+    command: npm install -g @google/clasp
