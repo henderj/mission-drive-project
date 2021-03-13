@@ -205,7 +205,10 @@ namespace Variables {
   }
 
   export function getPermissionsRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getPermissionsSheet().getDataRange();
+      const spreadsheet = getInterfaceSpreadsheet();
+      const name = getValueOfSetting("PermissionsRangeName");
+      return Utils.getNamedRange(spreadsheet, name);
+    // return getPermissionsSheet().getDataRange();
   }
 
   export function getArchiveFolderName(
@@ -231,13 +234,15 @@ namespace Variables {
 
   export function getLogRange(): GoogleAppsScript.Spreadsheet.Range {
     const name = getValueOfSetting("LogRangeName");
-    const ranges = getInterfaceSpreadsheet().getNamedRanges();
-    const filtered = ranges.filter((r) => r.getName() == name);
-    if (filtered.length <= 0) {
-      Logger.log("Could not find log range.");
-      return null;
-    }
-    return filtered[0].getRange();
+    const spreadsheet = getInterfaceSpreadsheet();
+    return Utils.getNamedRange(spreadsheet, name);
+    // const ranges = getInterfaceSpreadsheet().getNamedRanges();
+    // const filtered = ranges.filter((r) => r.getName() == name);
+    // if (filtered.length <= 0) {
+    //   Logger.log("Could not find log range.");
+    //   return null;
+    // }
+    // return filtered[0].getRange();
   }
 
   export function getAreaWithoutNumCol(): number {
