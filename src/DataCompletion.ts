@@ -56,28 +56,37 @@ namespace DataCompletion {
         const areaCell = row.getCell(1, Vars.getAreaColNum());
         const value: string = areaCell.getValue().toString();
         let areaName = value;
-        if (Utils.hasNumber(value)) areaName = Utils.removeNumbers(value);
 
         const areaWithoutNumCol = Vars.getAreaWithoutNumCol();
         const areaWithouNumCell = sheet.getRange(
             areaCell.getRow(),
             areaWithoutNumCol
         );
+        if (areaCell.isBlank()) {
+            areaWithouNumCell.setValue("");
+            return;
+        }
+        if (Utils.hasNumber(value)) areaName = Utils.removeNumbers(value);
+
         areaWithouNumCell.setValue(areaName.trim());
         return areaWithouNumCell;
     }
 
     function updateDistrictCell(row: GoogleAppsScript.Spreadsheet.Range): void {
         const areaWithoutNumCell = row.getCell(1, Vars.getAreaWithoutNumCol());
-
-        if (areaWithoutNumCell.getValue() == "") return null;
         const sheet = areaWithoutNumCell.getSheet();
+        const districtCol = Vars.getDistrictColNum();
+        const cellToSet = sheet.getRange(areaWithoutNumCell.getRow(), districtCol);
+
+        if (areaWithoutNumCell.isBlank()) {
+            cellToSet.setValue("");
+            return;
+        }
+
         const areaName: string = areaWithoutNumCell.getValue().toString();
         const areaRange = Vars.getCompleteAreaRange();
         const districtRange = areaRange.getSheet().getRange("A2:A");
 
-        const districtCol = Vars.getDistrictColNum();
-        const cellToSet = sheet.getRange(areaWithoutNumCell.getRow(), districtCol);
 
         const areaCell = areaRange.createTextFinder(areaName).findNext();
 
@@ -103,6 +112,11 @@ namespace DataCompletion {
 
         const zoneCol = Vars.getZoneColNum();
         const cellToSet = sheet.getRange(cell.getRow(), zoneCol);
+
+        if(cell.isBlank()){
+            cellToSet.setValue("");
+            return;
+        }
 
         const districtCell = districtRange
             .createTextFinder(districtName)
@@ -132,6 +146,11 @@ namespace DataCompletion {
             areaWithNumCell.getRow(),
             Vars.getAccessLevelColNum()
         );
+
+        if(areaWithNumCell.isBlank()){
+            cellToSet.setValue("");
+            return;
+        }
 
         const areaName: string = areaWithNumCell.getValue().toString();
 
