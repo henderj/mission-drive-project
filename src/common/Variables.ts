@@ -229,6 +229,10 @@ namespace Variables {
             const zoneCell: GoogleAppsScript.Spreadsheet.Range = getZoneRange()
                 .createTextFinder(zone)
                 .findNext();
+            if(zoneCell == null){
+                Logger.log(`could not find ${zone} zone in zone to district map. returning null...`);
+                return null;
+            }
             return zoneCell.offset(0, 1).offset(0, 0, 1, 6);
         }
         return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
