@@ -1,0 +1,12 @@
+{
+    "scriptId": "1ftBeDwGCX4tmkXR_lBTQgTaxUj8UPix1mVfhjM9n8KM7-u9-Fg20MJXV",
+    "fileExtension": "ts",
+    "filePushOrder": [
+        "README.js",
+        "src/common/API.js",
+        "src/common/Utils.ts",
+        "src/common/Variables.ts",
+        "src/common/Rainbow.ts",
+        "src/common/SheetLogger.ts"
+    ]
+}
