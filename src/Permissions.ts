@@ -32,8 +32,8 @@ namespace Permissions {
             .map((row) => row[0].toString().toLowerCase())
             .filter(e => Utils.isMissionaryEmail(e));
 
-        updatePermissionsToMissionDatabase(admins, true);
-        updateAccessFromRange([[]], admins);
+        // updatePermissionsToMissionDatabase(admins, true);
+        updateAccessFromRange([], admins);
         sheetLogger.Log("Finished updating admin permissions! Yay!");
     }
 
@@ -129,6 +129,10 @@ namespace Permissions {
 
             const folderName = folder.getName();
             if (!map.has(folderName)) {
+                if(!Utils.isContentFolder(folderName, Vars.getContentFolderSuffixes())){
+                    sheetLogger.Log(`${folderName} is not a content folder. Skipping...`);
+                    return;
+                }
                 sheetLogger.Log(
                     `Access map does not have a value for folder named ${folderName}. Giving admin access and continuing...`
                 );
@@ -136,7 +140,8 @@ namespace Permissions {
                 const adminsToAdd = [];
                 admins.forEach(email => {
                     if (!currentEditors.includes(email)) adminsToAdd.push(email);
-                })
+                });
+                
                 if (adminsToAdd.length >= 1) {
                     folder.addEditors(adminsToAdd);
                 }
