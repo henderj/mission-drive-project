@@ -129,7 +129,7 @@ namespace Permissions {
 
             const folderName = folder.getName();
             if (!map.has(folderName)) {
-                if(!Utils.isContentFolder(folderName, Vars.getContentFolderSuffixes())){
+                if (!Utils.isContentFolder(folderName, Vars.getContentFolderSuffixes())) {
                     sheetLogger.Log(`${folderName} is not a content folder. Skipping...`);
                     return;
                 }
@@ -141,7 +141,7 @@ namespace Permissions {
                 admins.forEach(email => {
                     if (!currentEditors.includes(email)) adminsToAdd.push(email);
                 });
-                
+
                 if (adminsToAdd.length >= 1) {
                     folder.addEditors(adminsToAdd);
                 }
@@ -244,13 +244,38 @@ namespace Permissions {
                     accessLevel == `STL` ||
                     accessLevel == `SMS`
                 ) {
+                    sheetLogger.Log(`Giving ${email} zone level access...`);
                     sheetLogger.Log(`Adding ${email} to ${zone} access queue`);
                     getOrCreateFolderKey(map, zone).push(email);
+                    
+                    const districts = Vars.getDistrictRange(zone).getValues().flat();
+                    const areas = districts.flatMap(d => Vars.getAreaRange(d).getValues().flat());
+                    // districts.forEach(d => {
+                    //     areas.concat(Vars.getAreaRange(d).getValues().flat());
+                    // })
+                    districts.forEach(d => {
+                        sheetLogger.Log(`Adding ${email} to ${district} access queue`);
+                        getOrCreateFolderKey(map, d).push(email);
+                    })
+
+                    areas.forEach(a => {
+                        sheetLogger.Log(`Adding ${email} to ${a} access queue`);
+                        getOrCreateFolderKey(map, a).push(email);
+                    })
                 }
 
                 if (accessLevel == `DL`) {
+                    sheetLogger.Log(`Giving ${email} district level access...`)
                     sheetLogger.Log(`Adding ${email} to ${district} access queue`);
                     getOrCreateFolderKey(map, district).push(email);
+
+
+                    const areas = Vars.getAreaRange(district).getValues().flat();
+
+                    areas.forEach(a => {
+                        sheetLogger.Log(`Adding ${email} to ${a} access queue`);
+                        getOrCreateFolderKey(map, a).push(email);
+                    })
                 }
 
                 sheetLogger.Log(`Adding ${email} to ${area} access queue`);
