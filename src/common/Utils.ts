@@ -222,4 +222,16 @@ namespace M_Utils {
     export function getStartingDate() {
         return new Date(2021, 1, 23);
     }
+
+    export function arrayUnique<T>(array: T[]): T[] {
+        var a = array.concat();
+        for (var i = 0; i < a.length; ++i) {
+            for (var j = i + 1; j < a.length; ++j) {
+                if (a[i] === a[j])
+                    a.splice(j--, 1);
+            }
+        }
+
+        return a;
+    }
 }
