@@ -328,4 +328,10 @@ namespace Variables {
         const func = () => getInterfaceSheetByID(getValueOfSetting("InterfaceSheetID"));
         return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
     }
+
+    export function getAdminRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "AdminRange";
+        const func = () => getInterfaceSpreadsheet().getRangeByName(getValueOfSetting("AdminRangeName"));
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 }
