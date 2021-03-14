@@ -39,7 +39,12 @@ function onOpen() {
     // .addItem("Scan")
     .addSeparator()
     .addItem("Archive Content", "flushContent")
-    .addItem("Update Folder Access", "updateFolderPermissions")
+    .addSubMenu(
+        ui.createMenu("Update Folder Access")
+        .addItem("For all users", "updateFolderPermissions")
+        .addItem("For admins", "updateFolderPermissionsAdmins")
+    )
+    // .addItem("Update Folder Access", "updateFolderPermissions")
     // .addItem("Update Content File Owners", "updateFileOwner")
     // .addSeparator()
     // .addItem("Run Test", "test")
@@ -117,7 +122,7 @@ function updateFolderPermissions() {
   const ui = SpreadsheetApp.getUi();
   const result = ui.alert(
     "Continue?",
-    `You are about to add and remove viewers and editors for the zone drives based on the Permissions sheet. Do you want to continue?`,
+    `You are about to add and remove viewers and editors for the zone drives based on the Access sheet. Do you want to continue?`,
     ui.ButtonSet.YES_NO
   );
 
@@ -126,6 +131,21 @@ function updateFolderPermissions() {
   SheetLogger.SheetLogger.Log("Updating Access...");
   Permissions.updatePermissions();
   SheetLogger.SheetLogger.Log("Done Updating Access!");
+}
+
+function updateFolderPermissionsAdmins() {
+  const ui = SpreadsheetApp.getUi();
+  const result = ui.alert(
+    "Continue?",
+    `You are about to add editors for the zone drives based on the Admins sheet. Do you want to continue?`,
+    ui.ButtonSet.YES_NO
+  );
+
+  if (result != ui.Button.YES) return;
+
+  SheetLogger.SheetLogger.Log("Updating Admin Access...");
+  Permissions.updateAdminPermissions();
+  SheetLogger.SheetLogger.Log("Done Updating Admin Access!");
 }
 
 function setUpFlushContentTrigger() {
