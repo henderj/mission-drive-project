@@ -4,6 +4,9 @@ describe("test isMissionaryEmail()", () => {
   it("j.h@missionary.org should be a missionary email", () => {
     expect(M_Utils.isMissionaryEmail("j.h@missionary.org")).toBe(true);
   });
+  it("j.h@churchofjesuschrist.org should be a missionary email", () => {
+    expect(M_Utils.isMissionaryEmail("j.h@churchofjesuschrist.org")).toBe(true);
+  });
   it("j.r.h@missionary.org should be a missionary email", () => {
     expect(M_Utils.isMissionaryEmail("j.r.h@missionary.org")).toBe(true);
   });

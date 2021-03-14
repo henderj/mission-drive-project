@@ -112,7 +112,7 @@ namespace M_Utils {
     }
 
     export function isMissionaryEmail(email: string): boolean {
-        const regExp = /[A-Za-z0-9._%+-]+@missionary\.org/i;
+        const regExp = /[A-Za-z0-9._%+-]+@(missionary)|(churchofjesuschrist)\.org/i;
         return regExp.test(email);
     }
 
