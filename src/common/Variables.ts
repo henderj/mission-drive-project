@@ -3,267 +3,329 @@ import { M_Utils } from "./Utils";
 export { Variables };
 
 namespace Variables {
-  const Utils = M_Utils;
+    const Utils = M_Utils;
 
-  const SettingsSpreadsheetID = "1meH_THNN87D7UAr1l_ynIZmeVXxA_rguliOODXig8QA";
-  const SettingsSheetName = "Settings";
+    const SettingsSpreadsheetID = "1meH_THNN87D7UAr1l_ynIZmeVXxA_rguliOODXig8QA";
+    const SettingsSheetName = "Settings";
 
-  export function getInterfaceSpreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    return SpreadsheetApp.openById(SettingsSpreadsheetID);
-  }
+    const cache = new Map<string, any>();
 
-  export function getSettingsSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    return getInterfaceSpreadsheet().getSheetByName(SettingsSheetName);
-  }
+    function getOrSetCachedVariable<T>(key: string, funcToRetrieveVar: () => T): T {
+        if (!cache.has(key)) {
+            cache.set(key, funcToRetrieveVar());
+        }
+        const value = cache.get(key) as T;
+        return value;
+    }
 
-  export function getInterfaceSheetByID(
-    gid: string
-  ): GoogleAppsScript.Spreadsheet.Sheet {
-    return Utils.getSheetByID(getInterfaceSpreadsheet(), gid);
-  }
+    export function getInterfaceSpreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
+        const key = "InterfaceSpreadsheet";
+        const func = () => SpreadsheetApp.openById(SettingsSpreadsheetID);
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Spreadsheet>(key, func);
+    }
 
-  export function getValueOfSetting(settingName: string): string {
-    return getSettingsSheet()
-      .createTextFinder(settingName)
-      .findNext()
-      .offset(0, 1)
-      .getValue()
-      .toString();
-  }
+    export function getSettingsSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "SettingsSheet";
+        const func = () => getInterfaceSpreadsheet().getSheetByName(SettingsSheetName);
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getTalentSpreadsheetID(): string {
-    return getValueOfSetting("MLMTalentSpreadsheetID");
-  }
+    export function getInterfaceSheetByID(
+        gid: string
+    ): GoogleAppsScript.Spreadsheet.Sheet {
+        return Utils.getSheetByID(getInterfaceSpreadsheet(), gid);
+    }
 
-  export function getTalentSpreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    return SpreadsheetApp.openById(getTalentSpreadsheetID());
-  }
+    export function getValueOfSetting(settingName: string): string {
+        const key = "Setting:" + settingName;
+        const func = () => getSettingsSheet()
+            .createTextFinder(settingName)
+            .findNext()
+            .offset(0, 1)
+            .getValue()
+            .toString();
+        return getOrSetCachedVariable<string>(key, func);
+    }
 
-  export function getTalentResponsesSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    return Utils.getSheetByID(
-      getTalentSpreadsheet(),
-      getValueOfSetting("MLMTalentResponsesSheetID")
-    );
-  }
+    export function getTalentSpreadsheetID(): string {
+        return getValueOfSetting("MLMTalentSpreadsheetID");
+    }
 
-  export function getTalentTemplateSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    return Utils.getSheetByID(
-      getTalentSpreadsheet(),
-      getValueOfSetting("MLMTalentTemplateSheetID")
-    );
-  }
+    export function getTalentSpreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
+        const key = "TalentSpreadsheet";
+        const func = () => SpreadsheetApp.openById(getTalentSpreadsheetID());
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Spreadsheet>(key, func);
+    }
 
-  export function getTalentFilteredDataSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    return Utils.getSheetByID(
-      getTalentSpreadsheet(),
-      getValueOfSetting("MLMTalentFilteredDataSheetID")
-    );
-  }
+    export function getTalentResponsesSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "TalentResponsesSheet";
+        const func = () => Utils.getSheetByID(
+            getTalentSpreadsheet(),
+            getValueOfSetting("MLMTalentResponsesSheetID")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getTalentQuickInfoSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    return Utils.getSheetByID(
-      getTalentSpreadsheet(),
-      getValueOfSetting("MLMTalentQuickInfoSheetID")
-    );
-  }
+    export function getTalentTemplateSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "TalentTemplateSheet";
+        const func = () => Utils.getSheetByID(
+            getTalentSpreadsheet(),
+            getValueOfSetting("MLMTalentTemplateSheetID")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getZoneToDistrictMapID(): string {
-    return getValueOfSetting("ZoneToDistrictMapID");
-  }
+    export function getTalentFilteredDataSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "TalentFilteredDataSheet";
+        const func = () => Utils.getSheetByID(
+            getTalentSpreadsheet(),
+            getValueOfSetting("MLMTalentFilteredDataSheetID")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getDistrictToAreaMapID(): string {
-    return getValueOfSetting("DistrictToAreaMapID");
-  }
+    export function getTalentQuickInfoSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "TalentQuickInfoSheet";
+        const func = () => Utils.getSheetByID(
+            getTalentSpreadsheet(),
+            getValueOfSetting("MLMTalentQuickInfoSheetID")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getPermissionsID(): string {
-    return getValueOfSetting("PermissionsID");
-  }
+    export function getZoneToDistrictMapID(): string {
+        return getValueOfSetting("ZoneToDistrictMapID");
+    }
 
-  export function getEmailAddressColNum(): number {
-    return parseInt(getValueOfSetting("PermissionsEmailAddressCol"));
-  }
+    export function getDistrictToAreaMapID(): string {
+        return getValueOfSetting("DistrictToAreaMapID");
+    }
 
-  export function getZoneColNum(): number {
-    return parseInt(getValueOfSetting("PermissionsZoneCol"));
-  }
+    export function getPermissionsID(): string {
+        return getValueOfSetting("PermissionsID");
+    }
 
-  export function getDistrictColNum(): number {
-    return parseInt(getValueOfSetting("PermissionsDistrictCol"));
-  }
+    export function getEmailAddressColNum(): number {
+        return parseInt(getValueOfSetting("PermissionsEmailAddressCol"));
+    }
 
-  export function getAreaColNum(): number {
-    return parseInt(getValueOfSetting("PermissionsAreaCol"));
-  }
+    export function getZoneColNum(): number {
+        return parseInt(getValueOfSetting("PermissionsZoneCol"));
+    }
 
-  export function getAccessLevelColNum(): number {
-    return parseInt(getValueOfSetting("PermissionsAccessLevelCol"));
-  }
+    export function getDistrictColNum(): number {
+        return parseInt(getValueOfSetting("PermissionsDistrictCol"));
+    }
 
-  export function getPermissionsRangeA1Notation(): string {
-    return getValueOfSetting("PermissionsRange");
-  }
+    export function getAreaColNum(): number {
+        return parseInt(getValueOfSetting("PermissionsAreaCol"));
+    }
 
-  export function getZoneToDistrictMapSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    const id: string = getZoneToDistrictMapID();
-    return getInterfaceSheetByID(id);
-  }
+    export function getAccessLevelColNum(): number {
+        return parseInt(getValueOfSetting("PermissionsAccessLevelCol"));
+    }
 
-  export function getDistrictToAreaMapSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    const id: string = getDistrictToAreaMapID();
-    return getInterfaceSheetByID(id);
-  }
+    export function getPermissionsRangeA1Notation(): string {
+        return getValueOfSetting("PermissionsRange");
+    }
 
-  export function getAccessLevelSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    const id: string = getValueOfSetting("AccessLevelSheetID");
-    return getInterfaceSheetByID(id);
-  }
+    export function getZoneToDistrictMapSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "ZoneToDistrictMapSheet";
+        const func = () => {
+            const id: string = getZoneToDistrictMapID();
+            return getInterfaceSheetByID(id);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getPermissionsSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    const id: string = getValueOfSetting("PermissionsID");
-    return getInterfaceSheetByID(id);
-  }
+    export function getDistrictToAreaMapSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "DistrictToAreaMapSheet";
+        const func = () => {
+            const id: string = getDistrictToAreaMapID();
+            return getInterfaceSheetByID(id);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getMissionDatabaseID(): string {
-    return getValueOfSetting("MissionDatabaseID");
-  }
+    export function getAccessLevelSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "AccessLevelSheet";
+        const func = () => {
+            const id: string = getValueOfSetting("AccessLevelSheetID");
+            return getInterfaceSheetByID(id);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getMissionDriveID(): string {
-    return getValueOfSetting("MissionDriveID");
-  }
+    export function getPermissionsSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "PermissionsSheet";
+        const func = () => {
+            const id: string = getValueOfSetting("PermissionsID");
+            return getInterfaceSheetByID(id);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 
-  export function getZoneDrivesID(): string {
-    return getValueOfSetting("ZoneDrivesID");
-  }
+    export function getMissionDatabaseID(): string {
+        return getValueOfSetting("MissionDatabaseID");
+    }
 
-  export function getZoneFolderSuffix(): string {
-    return " " + getValueOfSetting("ZoneFolderSuffix");
-  }
+    export function getMissionDriveID(): string {
+        return getValueOfSetting("MissionDriveID");
+    }
 
-  export function getDistrictFolderSuffix(): string {
-    return " " + getValueOfSetting("DistrictFolderSuffix");
-  }
+    export function getZoneDrivesID(): string {
+        return getValueOfSetting("ZoneDrivesID");
+    }
 
-  export function getAreaFolderSuffix(): string {
-    return " " + getValueOfSetting("AreaFolderSuffix");
-  }
+    export function getZoneFolderSuffix(): string {
+        return " " + getValueOfSetting("ZoneFolderSuffix");
+    }
 
-  export function getArchiveFolderSuffix(): string {
-    return " " + getValueOfSetting("ArchiveFolderSuffix");
-  }
+    export function getDistrictFolderSuffix(): string {
+        return " " + getValueOfSetting("DistrictFolderSuffix");
+    }
 
-  export function getSMSShortcutsFolderName(): string {
-    return getValueOfSetting("SMSShortcutsFolderName");
-  }
+    export function getAreaFolderSuffix(): string {
+        return " " + getValueOfSetting("AreaFolderSuffix");
+    }
 
-  export function getQualityFolderName(): string {
-    return getValueOfSetting("QualityFolderName");
-  }
+    export function getArchiveFolderSuffix(): string {
+        return " " + getValueOfSetting("ArchiveFolderSuffix");
+    }
 
-  export function getQuickFolderName(): string {
-    return getValueOfSetting("QuickFolderName");
-  }
+    export function getSMSShortcutsFolderName(): string {
+        return getValueOfSetting("SMSShortcutsFolderName");
+    }
 
-  export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getInterfaceSpreadsheet().getRangeByName(
-      getValueOfSetting("CompleteZoneRange")
-    );
-  }
+    export function getQualityFolderName(): string {
+        return getValueOfSetting("QualityFolderName");
+    }
 
-  export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getInterfaceSpreadsheet().getRangeByName(
-      getValueOfSetting("CompleteDistrictRange")
-    );
-  }
+    export function getQuickFolderName(): string {
+        return getValueOfSetting("QuickFolderName");
+    }
 
-  export function getDistrictRange(
-    zone: string
-  ): GoogleAppsScript.Spreadsheet.Range {
-    const zoneCell: GoogleAppsScript.Spreadsheet.Range = getZoneRange()
-      .createTextFinder(zone)
-      .findNext();
-    return zoneCell.offset(0, 1).offset(0, 0, 1, 6);
-  }
+    export function getZoneRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "ZoneRange";
+        const func = () => getInterfaceSpreadsheet().getRangeByName(
+            getValueOfSetting("CompleteZoneRange")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getAreaRange(
-    district: string
-  ): GoogleAppsScript.Spreadsheet.Range {
-    const districtCell: GoogleAppsScript.Spreadsheet.Range = getDistrictToAreaMapSheet()
-      .getRange("A2:A")
-      .createTextFinder(district)
-      .findNext();
-    return districtCell.offset(0, 1).offset(0, 0, 1, 9);
-  }
+    export function getCompleteDistrictRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "CompleteDistrictRange";
+        const func = () => getInterfaceSpreadsheet().getRangeByName(
+            getValueOfSetting("CompleteDistrictRange")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getInterfaceSpreadsheet().getRangeByName(
-      getValueOfSetting("CompleteAreaRange")
-    );
-  }
+    export function getDistrictRange(
+        zone: string
+    ): GoogleAppsScript.Spreadsheet.Range {
+        const key = "DistrictRange:" + zone;
+        const func = () => {
+            const zoneCell: GoogleAppsScript.Spreadsheet.Range = getZoneRange()
+                .createTextFinder(zone)
+                .findNext();
+            return zoneCell.offset(0, 1).offset(0, 0, 1, 6);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getAccessLevelRange(): GoogleAppsScript.Spreadsheet.Range {
-    return getAccessLevelSheet().getDataRange();
-  }
+    export function getAreaRange(
+        district: string
+    ): GoogleAppsScript.Spreadsheet.Range {
+        const key = "AreaRange:" + district;
+        const func = () => {
+            const districtCell: GoogleAppsScript.Spreadsheet.Range = getDistrictToAreaMapSheet()
+                .getRange("A2:A")
+                .createTextFinder(district)
+                .findNext();
+            return districtCell.offset(0, 1).offset(0, 0, 1, 9);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getPermissionsRange(): GoogleAppsScript.Spreadsheet.Range {
-      const spreadsheet = getInterfaceSpreadsheet();
-      const name = getValueOfSetting("PermissionsRangeName");
-      return Utils.getNamedRange(spreadsheet, name);
-    // return getPermissionsSheet().getDataRange();
-  }
+    export function getCompleteAreaRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "CompleteAreaRange";
+        const func = () => getInterfaceSpreadsheet().getRangeByName(
+            getValueOfSetting("CompleteAreaRange")
+        );
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getArchiveFolderName(
-    folder: GoogleAppsScript.Drive.Folder
-  ): string {
-    const folderName: string = folder.getName();
-    const prefix = Utils.getFolderPrefix(
-      folderName,
-      getContentFolderSuffixes()
-    );
-    Logger.log("folder prefix: %s.", prefix);
+    export function getAccessLevelRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "AccessLevelRange";
+        const func = () => getAccessLevelSheet().getDataRange();
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-    return prefix + getArchiveFolderSuffix();
-  }
+    export function getPermissionsRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "PermissionsRange";
+        const func = () => {
+            const spreadsheet = getInterfaceSpreadsheet();
+            const name = getValueOfSetting("PermissionsRangeName");
+            return spreadsheet.getRangeByName(name);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getContentFolderSuffixes(): string[] {
-    return [
-      getAreaFolderSuffix(),
-      getDistrictFolderSuffix(),
-      getZoneFolderSuffix(),
-    ];
-  }
+    export function getArchiveFolderName(
+        folder: GoogleAppsScript.Drive.Folder
+    ): string {
+        const folderName: string = folder.getName();
+        const prefix = Utils.getFolderPrefix(
+            folderName,
+            getContentFolderSuffixes()
+        );
+        Logger.log("folder prefix: %s.", prefix);
 
-  export function getLogRange(): GoogleAppsScript.Spreadsheet.Range {
-    const name = getValueOfSetting("LogRangeName");
-    const spreadsheet = getInterfaceSpreadsheet();
-    return Utils.getNamedRange(spreadsheet, name);
-    // const ranges = getInterfaceSpreadsheet().getNamedRanges();
-    // const filtered = ranges.filter((r) => r.getName() == name);
-    // if (filtered.length <= 0) {
-    //   Logger.log("Could not find log range.");
-    //   return null;
-    // }
-    // return filtered[0].getRange();
-  }
+        return prefix + getArchiveFolderSuffix();
+    }
 
-  export function getAreaWithoutNumCol(): number {
-    return parseInt(getValueOfSetting("PermissionsAreaWithoutNumCol"));
-  }
+    export function getContentFolderSuffixes(): string[] {
+        const key = "ContentFolderSuffixes";
+        const func = () => [
+            getAreaFolderSuffix(),
+            getDistrictFolderSuffix(),
+            getZoneFolderSuffix(),
+        ];
+        return getOrSetCachedVariable<string[]>(key, func);
+    }
 
-  export function getReroutePDFs(): boolean {
-    const value = getValueOfSetting("ReroutePDFs").toLowerCase().trim();
-    const possibleYes = ["y", "yes", "t", "true"];
-    return possibleYes.includes(value);
-  }
+    export function getLogRange(): GoogleAppsScript.Spreadsheet.Range {
+        const key = "LogRange";
+        const func = () => {
+            const name = getValueOfSetting("LogRangeName");
+            const spreadsheet = getInterfaceSpreadsheet();
+            return spreadsheet.getRangeByName(name);
+        }
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Range>(key, func);
+    }
 
-  export function getRerouteEmailAddress(): string {
-    return getValueOfSetting("RerouteEmailAddress");
-  }
+    export function getAreaWithoutNumCol(): number {
+        return parseInt(getValueOfSetting("PermissionsAreaWithoutNumCol"));
+    }
 
-  export function getTransferFunctions(): string {
-    return getValueOfSetting("TransferFunctions");
-  }
+    export function getReroutePDFs(): boolean {
+        const value = getValueOfSetting("ReroutePDFs").toLowerCase().trim();
+        const possibleYes = ["y", "yes", "t", "true"];
+        return possibleYes.includes(value);
+    }
 
-  export function getInterfaceSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    return getInterfaceSheetByID(getValueOfSetting("InterfaceSheetID"));
-  }
+    export function getRerouteEmailAddress(): string {
+        return getValueOfSetting("RerouteEmailAddress");
+    }
+
+    export function getTransferFunctions(): string {
+        return getValueOfSetting("TransferFunctions");
+    }
+
+    export function getInterfaceSheet(): GoogleAppsScript.Spreadsheet.Sheet {
+        const key = "InterfaceSheet";
+        const func = () => getInterfaceSheetByID(getValueOfSetting("InterfaceSheetID"));
+        return getOrSetCachedVariable<GoogleAppsScript.Spreadsheet.Sheet>(key, func);
+    }
 }
