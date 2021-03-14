@@ -46,17 +46,8 @@ namespace Permissions {
         sheetLogger.Log("Finished updating admin permissions! Yay!");
     }
 
-    export function reAddViewersToMissionDatabase(){
-        sheetLogger.Log("re adding viewers to mission database folder...");
-        const admins = getAdmins();
-        const emails = getEmails();
+    export function test() {
 
-        updatePermissionsToMissionDatabase([], false);
-        updatePermissionsToMissionDatabase([], true);
-
-        updatePermissionsToMissionDatabase(emails, false);
-        updatePermissionsToMissionDatabase(admins, true);
-        sheetLogger.Log("Finished re adding viewers to mission database folder!");
     }
 
     function updatePermissionsToMissionDatabase(emails: string[], admin: boolean): void {
@@ -127,6 +118,10 @@ namespace Permissions {
     function updateAccessFromRange(rangeValues: any[][], admins: string[]): void {
         try {
             const map = getAccessMap(rangeValues);
+            if (map == null) {
+                sheetLogger.Log(`There was an error while generating the access map. terminating...`);
+                return;
+            }
             const zoneDrives = DriveApp.getFolderById(Vars.getZoneDrivesID());
 
             Utils.forEveryFolder(
@@ -176,7 +171,7 @@ namespace Permissions {
 
             const currentEmails = folder
                 .getEditors()
-                .map((user: { getEmail: () => string }) =>
+                .map((user) =>
                     user.getEmail().toLowerCase()
                 );
 
@@ -203,6 +198,12 @@ namespace Permissions {
                     continue;
                 }
                 folder.removeEditor(currentEmails[i]);
+                const folderViewers = folder.getViewers().map(u => u.getEmail().toLowerCase());
+                if (!folderViewers.includes(currentEmails[i])) {
+                    sheetLogger.Log(`${currentEmails[i]} was accidentally removed from the viewers list for ${folder.getName()}. Re-adding as viewer...`);
+                    folder.addViewer(currentEmails[i]);
+                }
+
             }
 
             emails = emails.filter(
@@ -301,7 +302,11 @@ namespace Permissions {
                     getOrCreateFolderKey(map, districtFolderName).push(email);
 
 
-                    const areas = Vars.getAreaRange(districtFolderName).getValues().flat();
+                    const areas = Vars.getAreaRange(district)
+                        .getValues()
+                        .flat()
+                        .filter(a => a != null && a != "")
+                        .map(a => a + Vars.getAreaFolderSuffix());
 
                     areas.forEach(a => {
                         sheetLogger.Log(`Adding ${email} to ${a} access queue`);
@@ -316,7 +321,7 @@ namespace Permissions {
         } catch (e) {
             sheetLogger.Log(`ERROR - error occurred while creating access map. skipping...
       Error Message: ${e.toString()}`);
-            return map;
+            return null;
         }
     }
 
