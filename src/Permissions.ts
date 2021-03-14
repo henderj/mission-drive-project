@@ -9,16 +9,27 @@ namespace Permissions {
     const Utils = M_Utils;
     const sheetLogger = SheetLogger.SheetLogger;
 
-    export function updatePermissions(): void {
-        sheetLogger.Log(`Updating permissions...`);
+    function getAdmins(): string[] {
+        const admins: string[] = Vars.getAdminRange().getValues()
+            .map((row) => row[0].toString().toLowerCase())
+            .filter(e => Utils.isMissionaryEmail(e));
+        return admins;
+    }
+
+    function getEmails(): string[] {
         const rangeValues = Vars.getPermissionsRange().getValues();
         const emailAddressColNum = Vars.getEmailAddressColNum() - 1;
         const emails: string[] = rangeValues
             .filter((row) => Utils.isMissionaryEmail(row[emailAddressColNum]))
             .map((row) => row[emailAddressColNum].toString().toLowerCase());
-        const admins: string[] = Vars.getAdminRange().getValues()
-            .map((row) => row[0].toString().toLowerCase())
-            .filter(e => Utils.isMissionaryEmail(e));
+        return emails;
+    }
+
+    export function updatePermissions(): void {
+        sheetLogger.Log(`Updating permissions...`);
+        const rangeValues = Vars.getPermissionsRange().getValues();
+        const emails: string[] = getEmails();
+        const admins: string[] = getAdmins();
 
         updatePermissionsToMissionDatabase(emails, false);
         updatePermissionsToMissionDatabase(admins, true);
@@ -28,13 +39,24 @@ namespace Permissions {
 
     export function updateAdminPermissions(): void {
         sheetLogger.Log("Updating admin permissions...");
-        const admins: string[] = Vars.getAdminRange().getValues()
-            .map((row) => row[0].toString().toLowerCase())
-            .filter(e => Utils.isMissionaryEmail(e));
+        const admins: string[] = getAdmins();
 
-        // updatePermissionsToMissionDatabase(admins, true);
+        updatePermissionsToMissionDatabase(admins, true);
         updateAccessFromRange([], admins);
         sheetLogger.Log("Finished updating admin permissions! Yay!");
+    }
+
+    export function reAddViewersToMissionDatabase(){
+        sheetLogger.Log("re adding viewers to mission database folder...");
+        const admins = getAdmins();
+        const emails = getEmails();
+
+        updatePermissionsToMissionDatabase([], false);
+        updatePermissionsToMissionDatabase([], true);
+
+        updatePermissionsToMissionDatabase(emails, false);
+        updatePermissionsToMissionDatabase(admins, true);
+        sheetLogger.Log("Finished re adding viewers to mission database folder!");
     }
 
     function updatePermissionsToMissionDatabase(emails: string[], admin: boolean): void {
@@ -198,7 +220,7 @@ namespace Permissions {
 
             sheetLogger.Log(
                 `Giving the following emails access to the ${folder.getName()} folder:\n${emails.join(
-                    `\n`
+                    `; `
                 )}`
             );
             folder.addEditors(emails);
@@ -209,19 +231,18 @@ namespace Permissions {
     }
 
     function getAccessMap(rangeValues: any[][]) {
+        const map: Map<string, string[]> = new Map();
         try {
-            const map: Map<string, string[]> = new Map();
             for (let i = 0; i < rangeValues.length; i++) {
                 const email: string = rangeValues[i][
                     Vars.getEmailAddressColNum() - 1
                 ].toString();
-                const zone =
-                    rangeValues[i][Vars.getZoneColNum() - 1] + Vars.getZoneFolderSuffix();
-                const district =
-                    rangeValues[i][Vars.getDistrictColNum() - 1] +
-                    Vars.getDistrictFolderSuffix();
-                const area =
-                    rangeValues[i][Vars.getAreaColNum() - 1] + Vars.getAreaFolderSuffix();
+                const zone = rangeValues[i][Vars.getZoneColNum() - 1];
+                const zoneFolderName = zone + Vars.getZoneFolderSuffix();
+                const district = rangeValues[i][Vars.getDistrictColNum() - 1];
+                const districtFolderName = district + Vars.getDistrictFolderSuffix();
+                const area = rangeValues[i][Vars.getAreaWithoutNumCol() - 1];
+                const areaFolderName = area + Vars.getAreaFolderSuffix();
                 const accessLevel: string = rangeValues[i][
                     Vars.getAccessLevelColNum() - 1
                 ].toString();
@@ -245,19 +266,29 @@ namespace Permissions {
                     accessLevel == `SMS`
                 ) {
                     sheetLogger.Log(`Giving ${email} zone level access...`);
-                    sheetLogger.Log(`Adding ${email} to ${zone} access queue`);
-                    getOrCreateFolderKey(map, zone).push(email);
-                    
-                    const districts = Vars.getDistrictRange(zone).getValues().flat();
-                    const areas = districts.flatMap(d => Vars.getAreaRange(d).getValues().flat());
-                    // districts.forEach(d => {
-                    //     areas.concat(Vars.getAreaRange(d).getValues().flat());
-                    // })
+                    sheetLogger.Log(`Adding ${email} to ${zoneFolderName} access queue`);
+                    getOrCreateFolderKey(map, zoneFolderName).push(email);
+
+                    sheetLogger.Log(`Finding districts for ${zone} zone...`);
+                    let districts = Vars.getDistrictRange(zone)
+                        .getValues()
+                        .flat()
+                        .filter(d => d != null && d != "");
+                    sheetLogger.Log(`found districts: ${districts.join("; ")}`);
+                    sheetLogger.Log(`finding areas in ${zone} zone...`)
+                    let areas = districts.flatMap(d => Vars.getAreaRange(d)
+                        .getValues()
+                        .flat()
+                        .filter(a => a != null && a != ""));
+                    sheetLogger.Log(`found areas: ${areas.join(";")}`);
+
+                    districts = districts.map(d => d + Vars.getDistrictFolderSuffix());
                     districts.forEach(d => {
-                        sheetLogger.Log(`Adding ${email} to ${district} access queue`);
+                        sheetLogger.Log(`Adding ${email} to ${d} access queue`);
                         getOrCreateFolderKey(map, d).push(email);
                     })
 
+                    areas = areas.map(a => a + Vars.getAreaFolderSuffix())
                     areas.forEach(a => {
                         sheetLogger.Log(`Adding ${email} to ${a} access queue`);
                         getOrCreateFolderKey(map, a).push(email);
@@ -266,11 +297,11 @@ namespace Permissions {
 
                 if (accessLevel == `DL`) {
                     sheetLogger.Log(`Giving ${email} district level access...`)
-                    sheetLogger.Log(`Adding ${email} to ${district} access queue`);
-                    getOrCreateFolderKey(map, district).push(email);
+                    sheetLogger.Log(`Adding ${email} to ${districtFolderName} access queue`);
+                    getOrCreateFolderKey(map, districtFolderName).push(email);
 
 
-                    const areas = Vars.getAreaRange(district).getValues().flat();
+                    const areas = Vars.getAreaRange(districtFolderName).getValues().flat();
 
                     areas.forEach(a => {
                         sheetLogger.Log(`Adding ${email} to ${a} access queue`);
@@ -278,14 +309,14 @@ namespace Permissions {
                     })
                 }
 
-                sheetLogger.Log(`Adding ${email} to ${area} access queue`);
-                getOrCreateFolderKey(map, area).push(email);
+                sheetLogger.Log(`Adding ${email} to ${areaFolderName} access queue`);
+                getOrCreateFolderKey(map, areaFolderName).push(email);
             }
             return map;
         } catch (e) {
             sheetLogger.Log(`ERROR - error occurred while creating access map. skipping...
       Error Message: ${e.toString()}`);
-            return null;
+            return map;
         }
     }
 
