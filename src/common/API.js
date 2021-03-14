@@ -98,7 +98,7 @@ function scanZoneFolders() {
 }
 
 function test() {
-  PDFSender.createAndSendPDFsForZoneOrDistrict("Lansing", false);
+  Permissions.test();
 }
 
 function flushContent() {
