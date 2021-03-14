@@ -44,10 +44,14 @@ namespace M_Utils {
         folderSuffixes: string[]
     ): void {
         const shouldSearch = (folder: GoogleAppsScript.Drive.Folder) => {
-            const suffix = getFolderSuffix(folder.getName(), folderSuffixes);
-            return suffix != "";
+            return isContentFolder(folder.getName(), folderSuffixes);
         };
         forEveryFolderConditional(startingFolder, func, shouldSearch);
+    }
+
+    export function isContentFolder(folderName: string, folderSuffixes: string[]): boolean {
+        const suffix = getFolderSuffix(folderName, folderSuffixes);
+        return suffix != "";
     }
 
     export function forEveryFolderConditional(
