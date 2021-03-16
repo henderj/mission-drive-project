@@ -3,4 +3,6 @@ image:
 
 tasks:
   - init: npm install
-    command: npm install -g @google/clasp
+  - command: npm install -g @google/clasp
+    command: clasp login --no-localhost
+    name: Clasp
