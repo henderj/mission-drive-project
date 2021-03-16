@@ -5,8 +5,8 @@ tasks:
   - name: Install
     init: npm install && npm install --only=dev
   - name: Clasp
-    command: >
-      npm install -g @google/clasp
+    command: 
+      npm install -g @google/clasp &&
       clasp login --no-localhost
 
 github:
