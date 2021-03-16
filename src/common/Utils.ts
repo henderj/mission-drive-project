@@ -90,13 +90,13 @@ namespace M_Utils {
 
     export function getNamedRange(spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet, name: string): GoogleAppsScript.Spreadsheet.Range {
         return spreadsheet.getRangeByName(name);
-        const ranges = spreadsheet.getNamedRanges();
-        const filtered = ranges.filter((r) => r.getName() == name);
-        if (filtered.length <= 0) {
-            Logger.log(`Could not find named range "${name}" in spreadsheet "${spreadsheet.getName()}.`);
-            return null;
-        }
-        return filtered[0].getRange();
+        // const ranges = spreadsheet.getNamedRanges();
+        // const filtered = ranges.filter((r) => r.getName() == name);
+        // if (filtered.length <= 0) {
+        //     Logger.log(`Could not find named range "${name}" in spreadsheet "${spreadsheet.getName()}.`);
+        //     return null;
+        // }
+        // return filtered[0].getRange();
     }
 
     export function forEachRangeCell(
